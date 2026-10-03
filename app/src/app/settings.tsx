@@ -2,7 +2,7 @@ import { Stack } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, Linking, Switch } from 'react-native';
 
-import { Btn, Card, Chip, Input, Row, Screen, T } from '@/components/ui';
+import { Btn, Card, Chip, Row, SavedInput, Screen, T } from '@/components/ui';
 import { useApp } from '@/features/app-context';
 import { scheduleSmartReminder } from '@/services/notifications';
 import { wipeAll, wipeConversations } from '@/services/storage/db';
@@ -35,7 +35,7 @@ export default function Settings() {
       <Card>
         <T v="h2">{`Version ${currentVersion()}`}</T>
         <T v="small" dim>GitHub repository hosting the APK releases (owner/repo):</T>
-        <Input value={settings.updateRepo} onChangeText={(v) => updateSettings({ updateRepo: v })} placeholder="owner/my-english-coach" autoCapitalize="none" />
+        <SavedInput value={settings.updateRepo} onSave={(v) => updateSettings({ updateRepo: v })} placeholder="owner/my-english-coach" autoCapitalize="none" />
         <Btn kind="ghost" label="Check for updates" onPress={check} />
         {!!msg && <T>{msg}</T>}
         {upd?.available && (
@@ -71,9 +71,9 @@ export default function Settings() {
           <Switch value={settings.llmEnabled} onValueChange={(v) => updateSettings({ llmEnabled: v })} />
         </Row>
         <T v="small" dim>Endpoint compatible OpenAI : Ollama (http://IP-du-PC:11434/v1), LM Studio, llama.cpp server, ou une API cloud. Ton texte (pas l’audio) est envoyé à cette adresse.</T>
-        <Input value={settings.llmBaseUrl} onChangeText={(v) => updateSettings({ llmBaseUrl: v })} placeholder="Base URL" autoCapitalize="none" />
-        <Input value={settings.llmModel} onChangeText={(v) => updateSettings({ llmModel: v })} placeholder="Model name" autoCapitalize="none" />
-        <Input value={settings.llmApiKey} onChangeText={(v) => updateSettings({ llmApiKey: v })} placeholder="API key (optional)" autoCapitalize="none" secureTextEntry />
+        <SavedInput value={settings.llmBaseUrl} onSave={(v) => updateSettings({ llmBaseUrl: v })} placeholder="Base URL" autoCapitalize="none" />
+        <SavedInput value={settings.llmModel} onSave={(v) => updateSettings({ llmModel: v })} placeholder="Model name" autoCapitalize="none" />
+        <SavedInput value={settings.llmApiKey} onSave={(v) => updateSettings({ llmApiKey: v })} placeholder="API key (optional)" autoCapitalize="none" secureTextEntry />
       </Card>
 
       <Card>
@@ -97,7 +97,7 @@ export default function Settings() {
           ))}
         </Row>
         <T v="small" dim>Professional domain</T>
-        <Input value={profile.domain} onChangeText={(v) => updateProfile({ domain: v })} />
+        <SavedInput value={profile.domain} onSave={(v) => updateProfile({ domain: v })} />
       </Card>
 
       <Card>

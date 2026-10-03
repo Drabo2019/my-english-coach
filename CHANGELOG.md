@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.1.3] - 2026-10-03
+- Fix: Settings text fields (GitHub repository, AI endpoint/model/key, professional domain) dropped characters while typing. They now keep your input locally and save after a short pause or when you leave the field.
+
 ## [0.1.2] - 2026-10-03
 - Fix: bottom tab bar overlapped Android's navigation bar (now respects system insets); conversation input bar too.
 - Fix: Android Back button closed the app from sub-views. Back now returns to the previous step (exercise list, review session, onboarding steps, Speak-without-fear steps).

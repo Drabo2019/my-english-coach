@@ -129,6 +129,32 @@ export function Input(p: TextInputProps) {
   );
 }
 
+/** Text field that keeps its own state while typing and persists on a short debounce / blur.
+ *  (Persisting on every keystroke through an async store races and drops characters.) */
+export function SavedInput({ value, onSave, ...p }: Omit<TextInputProps, 'value' | 'onChangeText'> & { value: string; onSave: (v: string) => void }) {
+  const [local, setLocal] = React.useState(value);
+  const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const latest = React.useRef(local);
+  const flush = () => {
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = null;
+    onSave(latest.current);
+  };
+  return (
+    <Input
+      {...p}
+      value={local}
+      onChangeText={(v) => {
+        latest.current = v;
+        setLocal(v);
+        if (timer.current) clearTimeout(timer.current);
+        timer.current = setTimeout(flush, 500);
+      }}
+      onBlur={flush}
+    />
+  );
+}
+
 export function Bar({ value, tone }: { value: number; tone?: 'accent' | 'good' }) {
   const th = useTheme();
   return (
