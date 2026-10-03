@@ -1,8 +1,9 @@
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { Btn, Card, Chip, Input, Row, Screen, T } from '@/components/ui';
 import { useApp } from '@/features/app-context';
+import { useInnerBack } from '@/hooks/use-inner-back';
 
 const GOALS = ['Conversation', 'Work', 'Travel', 'Living abroad', 'Studies', 'Exams', 'Technology', 'Understanding films', 'Confidence', 'General level'];
 const TIMES = [5, 10, 15, 20, 30, 45, 60];
@@ -14,6 +15,9 @@ export default function Onboarding() {
   const [minutes, setMinutes] = useState(15);
   const [domain, setDomain] = useState('engineering / electronics');
   const [variant, setVariant] = useState<'intl' | 'us' | 'uk'>('intl');
+
+  const back = useCallback(() => setStep((s) => Math.max(0, s - 1)), []);
+  useInnerBack(step > 0, back);
 
   const toggle = (g: string) => setGoals((x) => (x.includes(g) ? x.filter((y) => y !== g) : [...x, g]));
   const save = () => updateProfile({ goals, minutesPerDay: minutes, domain, variant });
@@ -51,7 +55,10 @@ export default function Onboarding() {
             <Chip label="American" active={variant === 'us'} onPress={() => setVariant('us')} />
             <Chip label="British" active={variant === 'uk'} onPress={() => setVariant('uk')} />
           </Row>
-          <Btn label="Continuer" onPress={() => setStep(2)} />
+          <Row>
+            <Btn kind="ghost" label="← Retour" onPress={back} />
+            <Btn label="Continuer" onPress={() => setStep(2)} />
+          </Row>
         </>
       )}
       {step === 2 && (
@@ -67,6 +74,7 @@ export default function Onboarding() {
               router.replace('/placement');
             }}
           />
+          <Btn kind="ghost" label="← Retour" onPress={back} />
           <Btn
             kind="ghost"
             label="Passer (niveau A2 par défaut)"

@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
 import { Btn, Card, Input, Row, Screen, T, Tag } from '@/components/ui';
 import { LISTENING } from '@/data/content';
@@ -7,6 +7,7 @@ import { useApp } from '@/features/app-context';
 import { similarity } from '@/features/items';
 import { addScore, logActivity } from '@/services/storage/repo';
 import { tts } from '@/services/speech';
+import { useInnerBack } from '@/hooks/use-inner-back';
 import { LEVELS } from '@/types';
 
 const SPEEDS = [
@@ -25,6 +26,8 @@ export default function Listening() {
   const t0 = useRef(Date.now());
   const done = useRef(false);
 
+  const goList = useCallback(() => { tts.stop(); setSel(null); }, []);
+  useInnerBack(sel !== null, goList);
   const item = LISTENING.find((x) => x.id === sel);
   const myLevel = Math.round(profile.levels.listening);
 

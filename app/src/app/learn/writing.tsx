@@ -1,10 +1,11 @@
 import { Stack } from 'expo-router';
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
 import { Btn, Card, Input, Row, Screen, Speak, T, Tag } from '@/components/ui';
 import { useApp } from '@/features/app-context';
 import { getAI, type ReviewResult } from '@/services/ai';
 import { logActivity, recordMistake } from '@/services/storage/repo';
+import { useInnerBack } from '@/hooks/use-inner-back';
 import { useTheme } from '@/hooks/use-theme';
 
 const PROMPTS = [
@@ -31,6 +32,8 @@ export default function Writing() {
   const [res, setRes] = useState<ReviewResult | null>(null);
   const [warn, setWarn] = useState<string[]>([]);
   const t0 = useRef(Date.now());
+  const goList = useCallback(() => setSel(null), []);
+  useInnerBack(sel !== null, goList);
   const p = PROMPTS.find((x) => x.id === sel);
 
   if (!p) {

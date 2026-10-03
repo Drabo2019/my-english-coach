@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Text } from 'react-native';
 
 import { Btn, Card, Row, Screen, Speak, T, Tag } from '@/components/ui';
@@ -8,6 +8,7 @@ import { VOCAB } from '@/data/vocabulary';
 import { useApp } from '@/features/app-context';
 import { useTheme } from '@/hooks/use-theme';
 import { addScore, logActivity, toggleSaved } from '@/services/storage/repo';
+import { useInnerBack } from '@/hooks/use-inner-back';
 import { LEVELS } from '@/types';
 
 const stripWord = (w: string) => w.toLowerCase().replace(/^[^a-z]+|[^a-z]+$/g, '').replace(/’s$/, '');
@@ -21,6 +22,8 @@ export default function Reading() {
   const [picked, setPicked] = useState<Record<number, number>>({});
   const t0 = useRef(Date.now());
   const done = useRef(false);
+  const goList = useCallback(() => setSel(null), []);
+  useInnerBack(sel !== null, goList);
   const text = READING.find((r) => r.id === sel);
 
   if (!text) {

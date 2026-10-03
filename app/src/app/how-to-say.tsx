@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router';
+import { Stack, router } from 'expo-router';
 import React, { useState } from 'react';
 
 import { Btn, Card, Input, Row, Screen, Speak, T } from '@/components/ui';
@@ -34,7 +34,7 @@ export default function HowToSay() {
 
   return (
     <Screen>
-      <Stack.Screen options={{ title: 'How do I say…?', presentation: 'modal' }} />
+      <Stack.Screen options={{ title: 'How do I say…?', presentation: 'modal', headerRight: () => <Btn small kind="ghost" label="Close" onPress={() => router.back()} /> }} />
       <T dim>Écris ou dicte en français. Tu obtiens l’anglais naturel, à dire tout de suite.</T>
       <Input value={fr} onChangeText={setFr} placeholder="Comment dire : « Je vais vérifier et je te tiens au courant. »" multiline autoFocus />
       <Btn label={busy ? 'Searching…' : 'Say it in English'} disabled={busy || !fr.trim()} onPress={go} />

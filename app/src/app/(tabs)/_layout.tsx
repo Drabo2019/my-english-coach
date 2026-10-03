@@ -1,6 +1,7 @@
 import { Tabs, router } from 'expo-router';
 import React from 'react';
 import { Pressable, Text } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme } from '@/hooks/use-theme';
 
@@ -23,6 +24,7 @@ const HowToSayButton = () => {
 
 export default function TabsLayout() {
   const th = useTheme();
+  const insets = useSafeAreaInsets();
   return (
     <Tabs
       screenOptions={{
@@ -30,7 +32,7 @@ export default function TabsLayout() {
         headerTitleStyle: { color: th.text },
         headerShadowVisible: false,
         headerRight: () => <HowToSayButton />,
-        tabBarStyle: { backgroundColor: th.card, borderTopColor: th.border, height: 62, paddingBottom: 6 },
+        tabBarStyle: { backgroundColor: th.card, borderTopColor: th.border, height: 58 + insets.bottom, paddingBottom: insets.bottom + 4, paddingTop: 4 },
         tabBarActiveTintColor: th.accent,
         tabBarInactiveTintColor: th.textSecondary,
         sceneStyle: { backgroundColor: th.background },

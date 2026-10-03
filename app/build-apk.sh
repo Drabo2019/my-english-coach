@@ -8,6 +8,8 @@ export ANDROID_HOME="${ANDROID_HOME:-$LOCALAPPDATA/Android/Sdk}"
 export PATH="$JAVA_HOME/bin:$PATH"
 KEYENV="${COACH_KEYSTORE_ENV:-$HOME/.english-coach/keystore.env}"
 if [ -f "$KEYENV" ]; then set -a; . "$KEYENV"; set +a; else echo "WARN: no keystore env -> debug-signed APK (updates will NOT install over a release-signed one)"; fi
+# a Gradle daemon from the previous build can lock android/ and make prebuild's clean fail (EBUSY)
+[ -x android/gradlew.bat ] && (cd android && ./gradlew.bat --stop >/dev/null 2>&1 || true)
 npx expo prebuild --platform android --no-install
 printf 'sdk.dir=%s\n' "$(cygpath -m "$ANDROID_HOME" 2>/dev/null || echo "$ANDROID_HOME")" > android/local.properties
 (cd android && ./gradlew.bat assembleRelease -PreactNativeArchitectures="${ARCHS:-arm64-v8a,x86_64}" --console=plain)

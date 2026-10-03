@@ -1,7 +1,8 @@
 import { Stack, router } from 'expo-router';
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
 import { Btn, Card, Row, Screen, T, Tag } from '@/components/ui';
+import { useInnerBack } from '@/hooks/use-inner-back';
 import { useLoad } from '@/hooks/use-load';
 import { stt } from '@/services/speech';
 import { kvGet, kvSet } from '@/services/storage/db';
@@ -32,6 +33,8 @@ export default function Fearless() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
   const t0 = useRef(0);
+  const leave = useCallback(() => { stt.stop(); setStep(null); setText(''); setSecs(null); }, []);
+  useInnerBack(step !== null, leave);
 
   if (step !== null && step < STEPS.length) {
     const s = STEPS[step];
@@ -72,6 +75,7 @@ export default function Fearless() {
         )}
         {err !== '' && <T color="#C2312B">{err}</T>}
         <Row>
+          <Btn small kind="ghost" label="← Back" onPress={leave} />
           <Btn small kind="ghost" label="Another prompt" onPress={() => { setP(p + 1); setText(''); setSecs(null); }} />
           <Btn
             small

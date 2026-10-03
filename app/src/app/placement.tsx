@@ -1,8 +1,10 @@
-import { router } from 'expo-router';
-import React, { useState } from 'react';
+import { Stack, router } from 'expo-router';
+import React, { useCallback, useState } from 'react';
+import { Alert } from 'react-native';
 
 import { Btn, Card, Row, Screen, T, Tag } from '@/components/ui';
 import { useApp } from '@/features/app-context';
+import { useInnerBack } from '@/hooks/use-inner-back';
 import { applyPlacement, levelLabel, overallIndex, PLACEMENT, PLACEMENT_SPEAK, weaknesses, type Answers } from '@/features/placement';
 import { addScore } from '@/services/storage/repo';
 import { pronunciation, stt, tts } from '@/services/speech';
@@ -22,6 +24,25 @@ export default function Placement() {
   const [err, setErr] = useState('');
   const [result, setResult] = useState<Profile | null>(null);
 
+  const quit = useCallback(() => {
+    if (phase === 'result') {
+      router.replace('/(tabs)');
+      return;
+    }
+    Alert.alert('Quitter le test ?', 'Tu pourras le refaire plus tard (Progress → Weekly check). Le niveau par défaut sera utilisé.', [
+      { text: 'Continuer le test', style: 'cancel' },
+      {
+        text: 'Quitter',
+        style: 'destructive',
+        onPress: async () => {
+          await updateProfile({ onboarded: true });
+          router.replace('/(tabs)');
+        },
+      },
+    ]);
+  }, [phase, updateProfile]);
+  useInnerBack(true, quit);
+
   const items = [...PLACEMENT].sort((a, b) => a.skill.localeCompare(b.skill));
   const total = items.length + PLACEMENT_SPEAK.length;
 
@@ -37,6 +58,7 @@ export default function Placement() {
     const it = items[i];
     return (
       <Screen>
+        <Stack.Screen options={{ headerRight: () => <Btn small kind="ghost" label="Quitter" onPress={quit} /> }} />
         <T v="label" dim>{`Question ${i + 1} / ${total}  ·  ${it.skill}`}</T>
         {it.audio && <Btn kind="ghost" label="🔊 Play audio" onPress={() => tts.speak(it.audio!, { rate: 0.9 })} />}
         <T v="h2">{it.prompt}</T>
@@ -77,6 +99,7 @@ export default function Placement() {
     };
     return (
       <Screen>
+        <Stack.Screen options={{ headerRight: () => <Btn small kind="ghost" label="Quitter" onPress={quit} /> }} />
         <T v="label" dim>{`Say it aloud ${si + 1} / ${PLACEMENT_SPEAK.length}`}</T>
         <Card>
           <T v="h2">{sp.target}</T>
@@ -110,6 +133,7 @@ export default function Placement() {
   if (phase === 'confidence') {
     return (
       <Screen>
+        <Stack.Screen options={{ headerRight: () => <Btn small kind="ghost" label="Quitter" onPress={quit} /> }} />
         <T v="h2">Quand tu parles anglais, tu te sens…</T>
         <Btn kind="ghost" label="Plutôt bloqué / peur de faire des erreurs" onPress={() => finish('low')} />
         <Btn kind="ghost" label="Moyen : ça dépend des situations" onPress={() => finish('medium')} />
@@ -122,6 +146,7 @@ export default function Placement() {
   const weak = weaknesses(r.levels);
   return (
     <Screen>
+      <Stack.Screen options={{ headerRight: () => <Btn small kind="ghost" label="Fermer" onPress={quit} /> }} />
       <T v="title">Your starting profile</T>
       <T dim>Estimation pour régler ton programme — pas une certification officielle. Elle sera affinée à chaque semaine.</T>
       <Card tone="accent">

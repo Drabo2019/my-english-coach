@@ -1,6 +1,7 @@
 import { router, Stack } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Btn, Card, Chip, Input, Row, Speak, T, Tag } from '@/components/ui';
 import { SCENARIOS } from '@/data/scenarios';
@@ -27,6 +28,7 @@ const FREE_OPENERS = [
 
 export function ConversationView({ scenarioId }: { scenarioId: string | null }) {
   const th = useTheme();
+  const insets = useSafeAreaInsets();
   const { profile, settings, updateSettings } = useApp();
   const scenario = SCENARIOS.find((s) => s.id === scenarioId) ?? null;
   const [history, setHistory] = useState<Turn[]>([]);
@@ -192,7 +194,7 @@ export function ConversationView({ scenarioId }: { scenarioId: string | null }) 
         </Card>
       )}
 
-      <View style={{ padding: 12, gap: 8 }}>
+      <View style={{ padding: 12, paddingBottom: 12 + insets.bottom, gap: 8 }}>
         <Row>
           <View style={{ flex: 1 }}>
             <Input value={input} onChangeText={setInput} placeholder={listening ? 'Listening…' : 'Type or tap 🎙'} onSubmitEditing={() => send(input)} returnKeyType="send" />

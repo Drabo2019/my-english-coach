@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.2] - 2026-10-03
+- Fix: bottom tab bar overlapped Android's navigation bar (now respects system insets); conversation input bar too.
+- Fix: Android Back button closed the app from sub-views. Back now returns to the previous step (exercise list, review session, onboarding steps, Speak-without-fear steps).
+- Added explicit controls: Back/Retour, Stop session (Review), Quit/Close (level check), Close (How do I say…).
+
 ## [0.1.1] - 2026-10-03
 - Fix: on-screen keyboard hid the message bar in conversations (Android).
 - Fix: SRS never gave MASTERED to cards that were only recognised, not produced.

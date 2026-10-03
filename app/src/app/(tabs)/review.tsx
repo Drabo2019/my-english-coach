@@ -4,6 +4,7 @@ import { Bar, Btn, Card, Input, Row, Screen, Speak, T, Tag } from '@/components/
 import { useApp } from '@/features/app-context';
 import { itemFor, pickNew, similarity, type ReviewItem } from '@/features/items';
 import { isDifficult, newCard, review, type Grade } from '@/features/srs';
+import { useInnerBack } from '@/hooks/use-inner-back';
 import { useLoad } from '@/hooks/use-load';
 import { pronunciation, stt } from '@/services/speech';
 import { allCards, dueCards, getCard, logActivity, saveCard } from '@/services/storage/repo';
@@ -54,6 +55,13 @@ export default function Review() {
     },
     [profile],
   );
+
+  const quit = useCallback(() => {
+    stt.stop();
+    if (done > 0) logActivity('review', (Date.now() - sessionStart.current) / 1000, `${done} cards (stopped)`);
+    setQueue(null);
+  }, [done]);
+  useInnerBack(queue !== null, quit);
 
   useEffect(() => {
     if (queue && queue.length > 0 && i >= queue.length) {
@@ -110,6 +118,7 @@ export default function Review() {
         <Tag label={item.kind === 'vocab' ? 'word' : 'sentence'} />
       </Row>
       <Bar value={i / queue.length} />
+      <Btn small kind="ghost" label="✕ Stop session" onPress={quit} />
       <Card>
         <T v="small" dim>Say it in English</T>
         <T v="h2">{item.promptFr}</T>
