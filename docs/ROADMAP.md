@@ -1,0 +1,29 @@
+# Roadmap
+
+Rule: always keep a **usable build**. Each phase ends with BUILD → TEST → RUN → FIX. After 0.1.0, run the *real user test* phase before adding features.
+
+| Phase | Goal | Status |
+|---|---|---|
+| **0** Research + architecture | Docs, stack decision, toolchain proven | ✔ done 2026-10-03 |
+| **1** Android MVP | Onboarding, placement, profile, dashboard, vocabulary, sentences, grammar, listening, reading, writing, speaking, scenarios, pronunciation, conversation (offline + LLM), SRS, mistakes, settings, local data, updater, CI | **0.1.0 built** (content volume below targets) |
+| **1.5** Real user test (next) | You use it daily for 1–2 weeks; log feedback in-app (Too easy / Too hard / Wrong correction…). Fix bugs; tune plan weights; grow content where you got stuck | next |
+| **2** AI conversation | Streaming replies, Ollama setup guide, conversation memory (summaries), on-device LLM trial (`llama.rn`), better LLM correction prompts, "emergency help" in-conversation overlay | |
+| **3** Pronunciation + voice | sherpa-onnx: Whisper/Zipformer STT + Kokoro TTS; evaluate phoneme scoring; waveform/compare view | |
+| **4** Advanced personalisation | Dynamic profile (confidence, hesitation time), auto-generated drills from mistakes (LLM + validation), weekly/monthly assessments with trends, French-support auto-decrease | |
+| **5** iOS | EAS Build or Mac build; TestFlight; audio-session tuning | |
+| **6** Web | Static export, Web Speech API, PWA offline | |
+| **7** Cloud sync | Optional account (self-hostable, e.g. Supabase/PocketBase), encrypted backup, multi-device | |
+
+## Backlog (unordered)
+
+- Content to reach MVP targets: 300–500 words (now ~120), 500+ sentences (now ~110), 20–30 grammar topics (now 19), 20 scenarios (now 11), 20+ pronunciation (now 12), 20+ listening (now 6), 20+ reading (now 6), 10+ writing (now 10).
+- Hesitation measurement (time-to-first-word) in Find the words.
+- Shadowing mode (repeat with audio at 0.8×).
+- Export/import progress as JSON (manual backup before Phase 7).
+- Maestro UI tests; Android instrumentation smoke test in CI on an emulator.
+- Dictionary/API integrations (licensed) for the built-in dictionary.
+- Tablets / landscape; accessibility audit with TalkBack.
+
+## Research cadence
+
+Every ~3 months: re-run COMPETITOR_RESEARCH.md and AI_RESEARCH.md; record changes here.

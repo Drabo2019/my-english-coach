@@ -1,0 +1,57 @@
+name: Release APK
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: android-actions/setup-android@v3
+      - run: npm ci
+      - run: npm run typecheck && npm test
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.COACH_KEYSTORE_BASE64 }}" | base64 -d > "$RUNNER_TEMP/release.keystore"
+          echo "COACH_KEYSTORE_PATH=$RUNNER_TEMP/release.keystore" >> "$GITHUB_ENV"
+          echo "COACH_KEYSTORE_PASSWORD=${{ secrets.COACH_KEYSTORE_PASSWORD }}" >> "$GITHUB_ENV"
+          echo "COACH_KEY_ALIAS=${{ secrets.COACH_KEY_ALIAS }}" >> "$GITHUB_ENV"
+          echo "COACH_KEY_PASSWORD=${{ secrets.COACH_KEY_PASSWORD }}" >> "$GITHUB_ENV"
+      - name: Build APK
+        run: |
+          npx expo prebuild --platform android --no-install
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a,x86_64 --console=plain
+      - name: Name APK
+        id: apk
+        run: |
+          VER=$(node -p "require('./app.json').expo.version")
+          mkdir -p ../dist
+          cp android/app/build/outputs/apk/release/app-release.apk "../dist/my-english-coach-$VER.apk"
+          echo "path=dist/my-english-coach-$VER.apk" >> "$GITHUB_OUTPUT"
+      - name: Release notes from CHANGELOG
+        run: |
+          VER=${GITHUB_REF_NAME#v}
+          awk -v v="$VER" '$0 ~ "^## \\[?"v {f=1; next} /^## / {f=0} f' ../CHANGELOG.md > ../notes.md || true
+          [ -s ../notes.md ] || echo "Release $VER" > ../notes.md
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.apk.outputs.path }}
+          body_path: notes.md
