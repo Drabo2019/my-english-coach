@@ -1,7 +1,10 @@
 import type { Level, Register, Sentence } from '@/types';
 
+import { SENTENCES_EXTRA } from './sentences-extra';
+import { SENTENCES_EXTRA2 } from './sentences-extra2';
+
 let n = 0;
-function s(situation: string, level: Level, en: string, fr: string, grammar?: string, register: Register = 'neutral', alt?: string): Sentence {
+export function s(situation: string, level: Level, en: string, fr: string, grammar?: string, register: Register = 'neutral', alt?: string): Sentence {
   n += 1;
   return { id: `s${String(n).padStart(4, '0')}`, en, fr, level, situation, register, grammar, alt };
 }
@@ -9,10 +12,10 @@ function s(situation: string, level: Level, en: string, fr: string, grammar?: st
 export const SITUATIONS = [
   'everyday', 'work', 'meetings', 'phone', 'travel', 'shopping', 'restaurant', 'doctor', 'colleagues',
   'friends', 'family', 'disagreement', 'questions', 'problem', 'clarification', 'opinion', 'apology',
-  'request', 'refusal', 'presenting', 'interview', 'technical', 'smalltalk',
+  'request', 'refusal', 'presenting', 'interview', 'technical', 'smalltalk', 'negotiating', 'email', 'learning', 'complaint', 'emergencies',
 ] as const;
 
-export const SENTENCES: Sentence[] = [
+const SENTENCES_CORE: Sentence[] = [
   // everyday
   s('everyday', 'A1', 'I bought some apples yesterday.', 'J’ai acheté des pommes hier.', 'past simple'),
   s('everyday', 'A1', 'I usually get up at seven.', 'Je me lève généralement à sept heures.', 'present simple'),
@@ -140,3 +143,6 @@ export const SENTENCES: Sentence[] = [
   s('technical', 'B1', 'Could you share your screen, please?', 'Pourriez-vous partager votre écran ?', 'modal'),
   s('technical', 'B1', 'I’ll run the test again and let you know.', 'Je relance le test et je te dis.', 'future'),
 ];
+
+// Core ids (s0001…) are frozen: user progress references them. New sentences live in sentences-extra.ts (ids t0001…).
+export const SENTENCES: Sentence[] = [...SENTENCES_CORE, ...SENTENCES_EXTRA, ...SENTENCES_EXTRA2];

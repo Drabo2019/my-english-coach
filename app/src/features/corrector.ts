@@ -46,7 +46,7 @@ const RULES: Rule[] = [
   { category: 'collocations', re: /\bdo (a|the|some) (mistakes?)\b/i, fix: (m) => `make ${m[1]} ${m[2]}`, why: 'On « make a mistake ».', severity: 2 },
   { category: 'structure', re: /\bI want that (you|he|she|they|we) (\w+)\b/i, fix: (m) => `I want ${m[1] === 'you' ? 'you' : m[1] === 'he' ? 'him' : m[1] === 'she' ? 'her' : m[1] === 'they' ? 'them' : 'us'} to ${m[2]}`, why: 'want + objet + to + verbe.', severity: 2 },
   { category: 'false friends', re: /\bI am (actually|eventually) (working|living|studying)\b/i, fix: (m) => `I am currently ${m[2]}`, why: 'Faux ami : actually = en fait ; actuellement = currently.', severity: 2 },
-  { category: 'word order', re: /\b(what|where|when|why|how) (you|he|she|they|we) (are|is|do|did|will|can)\b/i, fix: (m) => `${m[1]} ${m[3]} ${m[2]}`, why: 'Question : auxiliaire avant le sujet.', severity: 2 },
+  { category: 'word order', re: /(?:^|[.?!]\s+)(what|where|when|why|how) (you|he|she|they|we) (are|is|do|did|will|can)\b/i, fix: (m) => `${m[1]} ${m[3]} ${m[2]}`, why: 'Question : auxiliaire avant le sujet.', severity: 2 },
 ];
 
 export function analyze(text: string): Finding[] {
@@ -56,7 +56,7 @@ export function analyze(text: string): Finding[] {
     if (m) {
       out.push({
         category: r.category,
-        original: m[0],
+        original: m[0].replace(/^[.?!]\s+/, ''),
         correction: r.fix(m),
         explanation: r.why,
         severity: r.severity ?? 2,

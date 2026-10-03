@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0] - 2026-10-03
+- Content: vocabulary 136 → 312, sentences 114 → 434, grammar 19 → 25, scenarios 11 → 21, find-the-words 8 → 16, pronunciation 12 → 26, listening 6 → 20, reading 6 → 20.
+- Fix: offline corrector wrongly flagged correct indirect questions ("show me where we are"). Word-order rule now applies to direct questions only.
+- Existing sentence ids (s0001…) are frozen so your progress is kept; new sentences use t…/u… ids.
+
 ## [0.1.3] - 2026-10-03
 - Fix: Settings text fields (GitHub repository, AI endpoint/model/key, professional domain) dropped characters while typing. They now keep your input locally and save after a short pause or when you leave the field.
 

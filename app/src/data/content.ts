@@ -1,6 +1,8 @@
 import type { ListeningItem, PronunciationPair, ReadingText, Resource } from '@/types';
 
-export const READING: ReadingText[] = [
+import { LISTENING_EXTRA, PRONUNCIATION_EXTRA, READING_EXTRA } from './content-extra';
+
+const READING_CORE: ReadingText[] = [
   {
     id: 'r1', title: 'A busy morning', level: 'A1',
     text: 'Tom wakes up at seven. He drinks a coffee and eats some bread. Then he takes the bus to work. The bus is late today, so Tom is late too. He says sorry to his boss.',
@@ -51,7 +53,7 @@ export const READING: ReadingText[] = [
   },
 ];
 
-export const LISTENING: ListeningItem[] = [
+const LISTENING_CORE: ListeningItem[] = [
   { id: 'l1', level: 'A1', accent: 'us', text: 'Hello. My name is Anna. I am from Canada. I work in a hospital.', questions: [{ q: 'Where is Anna from?', options: ['Canada', 'Australia', 'England'], answer: 0 }, { q: 'Where does she work?', options: ['In a school', 'In a hospital', 'In a shop'], answer: 1 }], gaps: ['Canada', 'hospital'] },
   { id: 'l2', level: 'A2', accent: 'uk', text: 'Excuse me, how do I get to the station? Go straight on, then turn left at the traffic lights. It takes about five minutes.', questions: [{ q: 'Where do you turn left?', options: ['At the bank', 'At the traffic lights', 'At the school'], answer: 1 }, { q: 'How long does it take?', options: ['Five minutes', 'Fifteen minutes', 'One hour'], answer: 0 }], gaps: ['left', 'five'] },
   { id: 'l3', level: 'A2', accent: 'us', text: 'I’d like to book a table for four people tomorrow at seven thirty, please.', questions: [{ q: 'How many people?', options: ['Two', 'Four', 'Six'], answer: 1 }, { q: 'What time?', options: ['6:30', '7:30', '8:30'], answer: 1 }], gaps: ['four', 'seven'] },
@@ -60,7 +62,7 @@ export const LISTENING: ListeningItem[] = [
   { id: 'l6', level: 'B2', accent: 'uk', text: 'Honestly, I’m not sure it’s going to work. We’ve tried something similar before and it didn’t go well, so I’d be a bit cautious about rushing into it.', questions: [{ q: 'How does the speaker feel?', options: ['Very enthusiastic', 'Cautious', 'Angry'], answer: 1 }], gaps: ['cautious'] },
 ];
 
-export const PRONUNCIATION: PronunciationPair[] = [
+const PRONUNCIATION_CORE: PronunciationPair[] = [
   { id: 'p1', a: 'ship', b: 'sheep', sounds: '/ɪ/ vs /iː/', tip: 'ship = voyelle courte et détendue ; sheep = voyelle longue, sourire.', sentence: 'The sheep is on the ship.' },
   { id: 'p2', a: 'live', b: 'leave', sounds: '/ɪ/ vs /iː/', tip: 'Même contraste court/long.', sentence: 'I live here, so I never leave.' },
   { id: 'p3', a: 'bad', b: 'bed', sounds: '/æ/ vs /e/', tip: '/æ/ : bouche bien ouverte ; /e/ : plus fermé.', sentence: 'The bad bed was too small.' },
@@ -74,6 +76,10 @@ export const PRONUNCIATION: PronunciationPair[] = [
   { id: 'p11', a: 'wine', b: 'vine', sounds: '/w/ vs /v/', tip: '/w/ : lèvres arrondies, sans toucher les dents.', sentence: 'We went west with wine.' },
   { id: 'p12', a: 'full', b: 'fool', sounds: '/ʊ/ vs /uː/', tip: 'court/long de nouveau.', sentence: 'The fool was full of joy.' },
 ];
+
+export const READING: ReadingText[] = [...READING_CORE, ...READING_EXTRA];
+export const LISTENING: ListeningItem[] = [...LISTENING_CORE, ...LISTENING_EXTRA];
+export const PRONUNCIATION: PronunciationPair[] = [...PRONUNCIATION_CORE, ...PRONUNCIATION_EXTRA];
 
 export const RESOURCES: Resource[] = [
   { id: 'bc', name: 'British Council LearnEnglish', url: 'https://learnenglish.britishcouncil.org', skills: ['grammar', 'listening', 'reading', 'writing', 'vocabulary'], levels: ['A1', 'A2', 'B1', 'B2', 'C1'], note: 'Cours gratuits classés par niveau CEFR, avec audio.' },

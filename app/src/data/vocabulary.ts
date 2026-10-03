@@ -1,36 +1,7 @@
-import type { Level, Register, VocabItem } from '@/types';
+import type { VocabItem } from '@/types';
 
-type Extra = Partial<
-  Pick<
-    VocabItem,
-    'meanings' | 'collocations' | 'synonyms' | 'antonyms' | 'mistakes' | 'related' | 'register' | 'usUk' | 'region'
-  >
->;
-
-function v(
-  cat: string,
-  word: string,
-  ipa: string,
-  pos: string,
-  fr: string,
-  level: Level,
-  en: string,
-  frEx: string,
-  x: Extra = {},
-): VocabItem {
-  return {
-    id: `${cat}-${word}`.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-    word,
-    ipa,
-    pos,
-    fr: fr.split('/').map((s) => s.trim()),
-    examples: [{ en, fr: frEx }],
-    level,
-    register: 'neutral' as Register,
-    cat,
-    ...x,
-  };
-}
+import { v } from './vocab-builder';
+import { VOCAB_EXTRA } from './vocabulary-extra';
 
 export const CATEGORIES = [
   'everyday', 'work', 'meetings', 'technology', 'engineering', 'travel', 'shopping', 'restaurant',
@@ -38,7 +9,7 @@ export const CATEGORIES = [
   'modern', 'phrasal', 'connectors',
 ] as const;
 
-export const VOCAB: VocabItem[] = [
+const VOCAB_CORE: VocabItem[] = [
   // ---- polysemic star word
   {
     id: 'modern-get',
@@ -219,5 +190,7 @@ export const VOCAB: VocabItem[] = [
   v('connectors', 'unless', '/ənˈles/', 'conj', 'à moins que', 'B1', 'I’ll go unless it rains.', 'J’irai sauf s’il pleut.'),
   v('connectors', 'otherwise', '/ˈʌðəwaɪz/', 'adv', 'sinon', 'B1', 'Hurry up, otherwise we’ll be late.', 'Dépêche-toi, sinon on sera en retard.'),
 ];
+
+export const VOCAB: VocabItem[] = [...VOCAB_CORE, ...VOCAB_EXTRA];
 
 export const vocabById = (id: string) => VOCAB.find((x) => x.id === id);

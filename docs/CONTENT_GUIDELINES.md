@@ -2,20 +2,21 @@
 
 Content = TypeScript data in `app/src/data/`. Everything is validated by `app/tests/logic.test.ts` (ids unique, answers point to options, no seed sentence trips the error detector).
 
-## MVP targets vs current (0.1.0)
+## MVP targets vs current
 
 | Area | Target | Now |
 |---|---|---|
-| Vocabulary | 300–500 words | ~120 (19 categories) |
-| Sentences | 500+ | ~110 (23 situations) |
-| Grammar topics | 20–30 | 19 |
-| Scenarios | 20 | 11 (+ free talk, 4 levels each via modes) |
-| Pronunciation drills | 20+ | 12 minimal pairs |
-| Listening | 20+ | 6 |
-| Reading | 20+ | 6 |
+| Vocabulary | 300–500 words | **312** (19 categories) |
+| Sentences | 500+ | **434** (28 situations) |
+| Grammar topics | 20–30 | **25** |
+| Scenarios | 20 | **21** (+ free talk; 4 levels each via modes) |
+| Find-the-words tasks | – | 16 |
+| Pronunciation drills | 20+ | **26** |
+| Listening | 20+ | **20** |
+| Reading | 20+ | **20** |
 | Writing | 10+ | 10 prompts |
 
-Gap is known and tracked in ROADMAP.md. Add content by feedback: the in-app "I want more sentences / I get stuck here" counts decide *where*.
+Remaining gap: ~65 sentences to reach 500. Tracked in ROADMAP.md. Add content by feedback: the in-app "I want more sentences / I get stuck here" counts decide *where*.
 
 ## Item rules
 

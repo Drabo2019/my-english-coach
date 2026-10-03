@@ -1,9 +1,11 @@
 import type { GrammarTopic } from '@/types';
 
+import { GRAMMAR_EXTRA } from './grammar-extra';
+
 type Q = [string, string[], number, string?];
 const q = (t: Q) => ({ q: t[0], options: t[1], answer: t[2], why: t[3] });
 
-export const GRAMMAR: GrammarTopic[] = [
+const GRAMMAR_CORE: GrammarTopic[] = [
   {
     id: 'be',
     title: 'Le verbe BE (être / avoir un âge / avoir chaud…)',
@@ -328,3 +330,5 @@ export const GRAMMAR: GrammarTopic[] = [
     say: ['Do you have any questions?', 'I don’t have much time today.'],
   },
 ];
+
+export const GRAMMAR: GrammarTopic[] = [...GRAMMAR_CORE, ...GRAMMAR_EXTRA];

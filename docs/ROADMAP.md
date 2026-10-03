@@ -16,7 +16,7 @@ Rule: always keep a **usable build**. Each phase ends with BUILD → TEST → RU
 
 ## Backlog (unordered)
 
-- Content to reach MVP targets: 300–500 words (now ~120), 500+ sentences (now ~110), 20–30 grammar topics (now 19), 20 scenarios (now 11), 20+ pronunciation (now 12), 20+ listening (now 6), 20+ reading (now 6), 10+ writing (now 10).
+- Content to reach MVP targets: sentences 434 → 500+ (all other areas now meet the targets).
 - Hesitation measurement (time-to-first-word) in Find the words.
 - Shadowing mode (repeat with audio at 0.8×).
 - Export/import progress as JSON (manual backup before Phase 7).

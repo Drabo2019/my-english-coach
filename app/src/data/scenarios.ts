@@ -1,11 +1,13 @@
 import type { FindWordsTask, Level, Scenario } from '@/types';
 
+import { FIND_WORDS_EXTRA, SCENARIOS_EXTRA } from './scenarios-extra';
+
 type Turn = { ai: string; hints: string[]; keywords?: string[] };
 const sc = (id: string, title: string, icon: string, level: Level, goal: string, persona: string, script: Turn[]): Scenario => ({
   id, title, icon, level, goal, persona, opening: script[0].ai, script,
 });
 
-export const SCENARIOS: Scenario[] = [
+const SCENARIOS_CORE: Scenario[] = [
   sc('smalltalk', 'Casual conversation', '☕', 'A2', 'Parler de sa journée', 'a friendly person chatting casually', [
     { ai: 'Hi! How was your day?', hints: ['Start with: "It was…"', 'Use: good / busy / tiring'], keywords: ['good', 'busy', 'fine', 'tired', 'great'] },
     { ai: 'Oh nice. What did you do today?', hints: ['Use the past: "I went…", "I worked…"', 'Say one thing you did'], keywords: ['went', 'worked', 'did', 'was'] },
@@ -71,7 +73,7 @@ export const SCENARIOS: Scenario[] = [
   ]),
 ];
 
-export const FIND_WORDS: FindWordsTask[] = [
+const FIND_WORDS_CORE: FindWordsTask[] = [
   { id: 'fw1', level: 'B1', situation: 'You are at work. Your colleague asks you why the test is delayed.', hints: ['Start with: "The test…"', '"The test has been…"', 'delayed'], model: 'The test has been delayed because we are waiting for a part.', keywords: ['delayed', 'because'] },
   { id: 'fw2', level: 'A2', situation: 'You are in a café. You want to order a coffee with milk.', hints: ['Start with: "I’d like…"', '"I’d like a…"', 'coffee with milk'], model: 'I’d like a coffee with milk, please.', keywords: ['like', 'coffee'] },
   { id: 'fw3', level: 'B1', situation: 'A customer asks if you can finish the report today. You can’t.', hints: ['Start with: "I’m afraid…"', '"I’m afraid I can’t…"', 'by tomorrow'], model: 'I’m afraid I can’t finish it today, but I can send it by tomorrow morning.', keywords: ['afraid', 'tomorrow'] },
@@ -81,3 +83,6 @@ export const FIND_WORDS: FindWordsTask[] = [
   { id: 'fw7', level: 'B1', situation: 'You are on the phone. The line is bad. Ask the other person to speak up.', hints: ['Start with: "Sorry…"', '"Sorry, the line…"', 'speak up'], model: 'Sorry, the line is bad. Could you speak up a little?', keywords: ['line', 'could'] },
   { id: 'fw8', level: 'B1', situation: 'Tell your boss you will check something and come back to them.', hints: ['Start with: "I’ll…"', '"I’ll check and…"', 'get back to you'], model: 'I’ll check and get back to you this afternoon.', keywords: ['check', 'back'] },
 ];
+
+export const SCENARIOS: Scenario[] = [...SCENARIOS_CORE, ...SCENARIOS_EXTRA];
+export const FIND_WORDS: FindWordsTask[] = [...FIND_WORDS_CORE, ...FIND_WORDS_EXTRA];

@@ -40,6 +40,22 @@ describe('content integrity', () => {
   });
 });
 
+describe('content volume (regression guard)', () => {
+  it('does not shrink below the 0.2 baseline', () => {
+    expect(VOCAB.length).toBeGreaterThanOrEqual(300);
+    expect(SENTENCES.length).toBeGreaterThanOrEqual(430);
+    expect(GRAMMAR.length).toBeGreaterThanOrEqual(25);
+    expect(SCENARIOS.length).toBeGreaterThanOrEqual(20);
+    expect(LISTENING.length).toBeGreaterThanOrEqual(20);
+    expect(READING.length).toBeGreaterThanOrEqual(20);
+  });
+  it('frozen core ids are unchanged', () => {
+    expect(SENTENCES[0].id).toBe('s0001');
+    expect(SENTENCES.find((x) => x.en === 'I bought some apples yesterday.')?.id).toBe('s0001');
+    expect(VOCAB.find((x) => x.word === 'get')?.id).toBe('modern-get');
+  });
+});
+
 describe('SRS', () => {
   it('lapse resets interval and keeps card due soon', () => {
     let c = review(newCard('x', 'vocab'), 2, 2000, true, 0);
@@ -77,9 +93,10 @@ describe('corrector', () => {
     expect(fixes('I work here since 3 years')).toContain('for 3 years');
     expect(fixes('I must to go')).toContain('must go');
     expect(fixes('She is engineer')).toContain('she is an engineer');
+    expect(fixes('Where you are going?')).toContain('where are you');
   });
   it('does not flag correct sentences', () => {
-    for (const s of ['I agree with you', 'Yesterday I went to work', 'He works here', 'I am 40 years old', 'I have to go', 'She has a car']) {
+    for (const s of ['I agree with you', 'Yesterday I went to work', 'He works here', 'I am 40 years old', 'I have to go', 'She has a car', 'Can you show me where we are?', 'I don’t know what they want']) {
       expect(analyze(s), s).toHaveLength(0);
     }
   });
