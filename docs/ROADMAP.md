@@ -16,7 +16,7 @@ Rule: always keep a **usable build**. Each phase ends with BUILD → TEST → RU
 
 ## Backlog (unordered)
 
-- Content to reach MVP targets: sentences 434 → 500+ (all other areas now meet the targets).
+- Content: MVP volume targets met (0.2.x). Next growth is feedback-driven (see in-app Feedback counts).
 - Hesitation measurement (time-to-first-word) in Find the words.
 - Shadowing mode (repeat with audio at 0.8×).
 - Export/import progress as JSON (manual backup before Phase 7).

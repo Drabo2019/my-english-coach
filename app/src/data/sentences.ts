@@ -2,6 +2,7 @@ import type { Level, Register, Sentence } from '@/types';
 
 import { SENTENCES_EXTRA } from './sentences-extra';
 import { SENTENCES_EXTRA2 } from './sentences-extra2';
+import { SENTENCES_EXTRA3 } from './sentences-extra3';
 
 let n = 0;
 export function s(situation: string, level: Level, en: string, fr: string, grammar?: string, register: Register = 'neutral', alt?: string): Sentence {
@@ -12,7 +13,7 @@ export function s(situation: string, level: Level, en: string, fr: string, gramm
 export const SITUATIONS = [
   'everyday', 'work', 'meetings', 'phone', 'travel', 'shopping', 'restaurant', 'doctor', 'colleagues',
   'friends', 'family', 'disagreement', 'questions', 'problem', 'clarification', 'opinion', 'apology',
-  'request', 'refusal', 'presenting', 'interview', 'technical', 'smalltalk', 'negotiating', 'email', 'learning', 'complaint', 'emergencies',
+  'request', 'refusal', 'presenting', 'interview', 'technical', 'smalltalk', 'negotiating', 'email', 'learning', 'complaint', 'emergencies', 'fluency', 'traps', 'bank', 'post', 'transport', 'feelings',
 ] as const;
 
 const SENTENCES_CORE: Sentence[] = [
@@ -145,4 +146,4 @@ const SENTENCES_CORE: Sentence[] = [
 ];
 
 // Core ids (s0001…) are frozen: user progress references them. New sentences live in sentences-extra.ts (ids t0001…).
-export const SENTENCES: Sentence[] = [...SENTENCES_CORE, ...SENTENCES_EXTRA, ...SENTENCES_EXTRA2];
+export const SENTENCES: Sentence[] = [...SENTENCES_CORE, ...SENTENCES_EXTRA, ...SENTENCES_EXTRA2, ...SENTENCES_EXTRA3];

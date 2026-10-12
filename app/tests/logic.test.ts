@@ -43,7 +43,7 @@ describe('content integrity', () => {
 describe('content volume (regression guard)', () => {
   it('does not shrink below the 0.2 baseline', () => {
     expect(VOCAB.length).toBeGreaterThanOrEqual(300);
-    expect(SENTENCES.length).toBeGreaterThanOrEqual(430);
+    expect(SENTENCES.length).toBeGreaterThanOrEqual(500);
     expect(GRAMMAR.length).toBeGreaterThanOrEqual(25);
     expect(SCENARIOS.length).toBeGreaterThanOrEqual(20);
     expect(LISTENING.length).toBeGreaterThanOrEqual(20);

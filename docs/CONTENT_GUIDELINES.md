@@ -7,7 +7,7 @@ Content = TypeScript data in `app/src/data/`. Everything is validated by `app/te
 | Area | Target | Now |
 |---|---|---|
 | Vocabulary | 300–500 words | **312** (19 categories) |
-| Sentences | 500+ | **434** (28 situations) |
+| Sentences | 500+ | **504** (34 situations) |
 | Grammar topics | 20–30 | **25** |
 | Scenarios | 20 | **21** (+ free talk; 4 levels each via modes) |
 | Find-the-words tasks | – | 16 |
@@ -16,7 +16,7 @@ Content = TypeScript data in `app/src/data/`. Everything is validated by `app/te
 | Reading | 20+ | **20** |
 | Writing | 10+ | 10 prompts |
 
-Remaining gap: ~65 sentences to reach 500. Tracked in ROADMAP.md. Add content by feedback: the in-app "I want more sentences / I get stuck here" counts decide *where*.
+All MVP volume targets are met. Add content by feedback: the in-app "I want more sentences / I get stuck here" counts decide *where*.
 
 ## Item rules
 

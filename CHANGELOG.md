@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.2.2] - 2026-10-12
+- Content: sentences 434 → 504 (spoken fillers to gain time, French-speaker traps as correct models, bank/post/transport/housing, feelings). MVP content targets are now all met.
+
 ## [0.2.1] - 2026-10-12
 - New app icon: white speech bubble with a voice waveform (one amber bar) on a blue→violet gradient. Adaptive, themed (monochrome) and splash variants. Source script: `app/assets/icon-src/make_icons.py`.
 
