@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.2.1] - 2026-10-12
+- New app icon: white speech bubble with a voice waveform (one amber bar) on a blue→violet gradient. Adaptive, themed (monochrome) and splash variants. Source script: `app/assets/icon-src/make_icons.py`.
+
 ## [0.2.0] - 2026-10-03
 - Content: vocabulary 136 → 312, sentences 114 → 434, grammar 19 → 25, scenarios 11 → 21, find-the-words 8 → 16, pronunciation 12 → 26, listening 6 → 20, reading 6 → 20.
 - Fix: offline corrector wrongly flagged correct indirect questions ("show me where we are"). Word-order rule now applies to direct questions only.
