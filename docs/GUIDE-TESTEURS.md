@@ -1,4 +1,4 @@
-# My English Coach — Guide du testeur (version 0.5.0)
+# My English Coach — Guide du testeur (version 0.5.1)
 
 Merci d'accepter de tester l'application. C'est une **version de test entre personnes de confiance** : elle n'est pas sur le Play Store, et vos retours servent à décider ce qu'on améliore. Vous êtes déjà à l'aise en anglais : c'est justement ce qui nous intéresse. La question centrale est **« est-ce que cette application m'aide encore à progresser à mon niveau (B2, C1, C2) ? »**
 
@@ -29,7 +29,7 @@ My English Coach est un entraîneur d'anglais pour francophones. Il suit une log
 
 ## 2. Installer l'application (Android)
 
-1. Téléchargez le fichier **`my-english-coach-0.5.0.apk`** (environ 70 Mo) depuis la page des versions :
+1. Téléchargez le fichier **`my-english-coach-0.5.1.apk`** (environ 70 Mo) depuis la page des versions :
    `https://github.com/Drabo2019/my-english-coach/releases/latest`
    (ou recevez-le par WhatsApp / Drive / clé USB).
 2. Touchez le fichier. Android demande d'**autoriser l'installation d'applications inconnues** pour l'application que vous utilisez (Chrome, Fichiers, WhatsApp…) : autorisez.

@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.5.1] - 2026-10-13
+- Feedback export now starts with the app version and the phone model, so test reports can be traced.
+
 ## [0.5.0] - 2026-10-13
 - Advanced learners: the level test now reaches C2 (vocabulary, grammar, reading, listening, a C1 spoken repeat) and the estimate no longer under-rates strong learners. Retake it from Settings -> Learning.
 - New C1/C2 content: 61 sentences (nuance, diplomacy, negotiation, inversion, mixed conditionals, subjunctive, cleft sentences, idioms), 45 words (incl. phrasal verbs and false friends), 6 grammar topics, 5 reading texts, 3 listenings, 5 Find-the-words situations. Shadowing now offers C1 and C2.

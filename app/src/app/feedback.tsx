@@ -1,12 +1,18 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
-import { Share } from 'react-native';
+import { Platform, Share } from 'react-native';
 
 import { Btn, Card, Chip, Input, Row, Screen, T } from '@/components/ui';
 import { useLoad } from '@/hooks/use-load';
 import { addFeedback, allFeedback } from '@/services/storage/repo';
+import { currentVersion } from '@/services/updates';
 
 const KINDS = ['Too easy', 'Too hard', 'Useful', 'Useless', 'I didn’t understand', 'I want more sentences', 'I want more conversation', 'I get stuck here', 'This correction is wrong'];
+
+function deviceInfo(): string {
+  const c = Platform.constants as { Model?: string; Release?: string; systemName?: string };
+  return Platform.OS === 'android' ? `${c.Model ?? 'Android'} · Android ${c.Release ?? Platform.Version}` : `${Platform.OS} ${Platform.Version}`;
+}
 
 export default function Feedback() {
   const { screen } = useLocalSearchParams<{ screen?: string }>();
@@ -48,7 +54,8 @@ export default function Feedback() {
             label="Export (share as text)"
             onPress={() =>
               Share.share({
-                message: (list ?? []).map((f) => `${new Date(f.ts).toISOString().slice(0, 10)} [${f.screen}] ${f.kind}${f.note ? ` — ${f.note}` : ''}`).join('\n'),
+                message: `My English Coach ${currentVersion()} · ${deviceInfo()}
+` + (list ?? []).map((f) => `${new Date(f.ts).toISOString().slice(0, 10)} [${f.screen}] ${f.kind}${f.note ? ` — ${f.note}` : ''}`).join('\n'),
               })
             }
           />
