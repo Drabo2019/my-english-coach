@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.0] - 2026-10-13
+- Find the words: measures the time before your first words (hesitation) and gives a short comment.
+- New Speak → Shadowing: listen to a sentence, then repeat it at once; choose level (A1–B2) and speed (slow / normal / native); word-level score.
+
 ## [0.3.0] - 2026-10-12
 - Backup: export your whole progress as a JSON file (Settings → Backup) and restore it on any install. The LLM API key is never included; restoring asks for confirmation and replaces local data atomically.
 - Automatic update check: once a day at startup (silent, can be disabled), with a banner on Home. The GitHub repository is now preset, so Settings no longer needs to be filled in.

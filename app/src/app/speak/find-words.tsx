@@ -16,6 +16,11 @@ export default function FindWords() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
   const t0 = useRef(Date.now());
+  const firstWord = useRef<number | null>(null);
+  const onText = (v: string) => {
+    if (firstWord.current === null && v.trim()) firstWord.current = Date.now();
+    setAnswer(v);
+  };
   const task = FIND_WORDS[i % FIND_WORDS.length];
 
   const finish = async () => {
@@ -30,9 +35,11 @@ export default function FindWords() {
     setRevealed(false);
     setErr('');
     t0.current = Date.now();
+    firstWord.current = null;
   };
   const hit = task.keywords.filter((k) => answer.toLowerCase().includes(k.toLowerCase())).length;
   const found = analyze(answer);
+  const hesitation = firstWord.current === null ? null : Math.round((firstWord.current - t0.current) / 100) / 10;
 
   return (
     <Screen>
@@ -53,15 +60,15 @@ export default function FindWords() {
               setErr('');
               tts.stop();
               try {
-                const r = await stt.listen({ onPartial: setAnswer });
-                setAnswer(r.transcript);
+                const r = await stt.listen({ onPartial: onText });
+                onText(r.transcript);
               } catch (e) {
                 setErr(`${e instanceof Error ? e.message : e}`);
               }
               setBusy(false);
             }}
           />
-          <Input value={answer} onChangeText={setAnswer} placeholder="…or type your answer" multiline />
+          <Input value={answer} onChangeText={onText} placeholder="…or type your answer" multiline />
           {err !== '' && <T v="small" color="#C2312B">{err}</T>}
           {hints > 0 && (
             <Card tone="warn">
@@ -84,6 +91,9 @@ export default function FindWords() {
             <Card tone={similarity(answer, task.model) > 0.6 || hit === task.keywords.length ? 'good' : 'warn'}>
               <T>{`You: ${answer}`}</T>
               <T v="small" dim>{`Key words used: ${hit}/${task.keywords.length}${hints ? ` · ${hints} hint(s)` : ' · no hint 👏'}`}</T>
+              {hesitation !== null && (
+                <T v="small" dim>{`Time before your first words: ${hesitation}s${hesitation <= 3 ? ' — fluent start 👏' : hesitation <= 8 ? ' — OK, try to start faster' : ' — long pause: say anything, even a simple sentence, to start'}`}</T>
+              )}
               {found.map((f, k) => (
                 <T key={k} v="small">{`❌ ${f.original} → ✅ ${f.correction} — ${f.explanation}`}</T>
               ))}

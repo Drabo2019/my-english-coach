@@ -8,6 +8,7 @@ const ITEMS = [
   { route: '/speak/scenarios', icon: '🎭', title: 'Scenarios', sub: 'Interview, airport, doctor, meeting… three levels each' },
   { route: '/speak/fearless', icon: '🦁', title: 'Speak without fear', sub: '10 steps: one sentence → free conversation' },
   { route: '/speak/pronunciation', icon: '👄', title: 'Pronunciation', sub: 'Minimal pairs, IPA, slow playback, repeat & compare' },
+  { route: '/speak/shadowing', icon: '🪞', title: 'Shadowing', sub: 'Listen, then repeat at once with the same rhythm — slow to native speed' },
   { route: '/speak/smalltalk', icon: '☕', title: 'Small talk', sub: 'Never be stuck when someone starts a conversation' },
 ] as const;
 
