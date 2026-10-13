@@ -9,7 +9,9 @@ Voice conversations are personal. Defaults are conservative.
 | Profile, progress, vocabulary memory, mistakes, activity, feedback, saved items, conversation text | Local SQLite (`coach.db`) in the app's private storage | **No.** No account, no analytics, no telemetry. |
 | Audio | **Never stored or sent by the app.** The app does not record to disk. | Android's speech recogniser processes it (see below). |
 | Text to a language model | Only if *you* enable "AI conversation partner" and set an endpoint | Yes, to the URL you configured (e.g. your PC's Ollama). Only the text of the conversation (and the French phrase in "How do I say…"). |
-| Update check | `api.github.com` (repository you set) | A normal HTTPS request; GitHub sees your IP. |
+| Update check | `api.github.com` (repository you set); once a day automatically, or on demand | A normal HTTPS request; GitHub sees your IP. Can be turned off in Settings. |
+| Backup file | Only when you tap Export: a JSON file you choose where to save | Contains your progress and conversation text. Your LLM API key is never included. |
+| Conversation memory | A short summary of recent conversations, stored locally and sent to *your* LLM endpoint inside the system prompt when AI is enabled | Deleted with “Delete conversation history”. |
 | "Learn More" | Opens external sites in the browser | Their own policies apply. |
 
 ## Speech recognition caveat (important)

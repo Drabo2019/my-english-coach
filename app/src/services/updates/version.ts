@@ -8,3 +8,10 @@ export function compareVersions(a: string, b: string): number {
   }
   return 0;
 }
+
+export const UPDATE_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
+
+/** True when a daily automatic check is due (never checked, or last check older than the interval). */
+export function shouldCheck(lastCheckedAt: number | null, now = Date.now()): boolean {
+  return lastCheckedAt === null || now - lastCheckedAt >= UPDATE_CHECK_INTERVAL_MS || lastCheckedAt > now;
+}

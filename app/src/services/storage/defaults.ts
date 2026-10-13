@@ -18,11 +18,14 @@ export interface Settings {
   llmModel: string;
   llmApiKey: string;
   updateRepo: string; // "owner/repo" on GitHub
+  autoCheckUpdates: boolean;
   fontScale: number;
   highContrast: boolean;
   ttsRate: number;
   notifications: boolean;
 }
+
+export const DEFAULT_UPDATE_REPO = 'Drabo2019/my-english-coach';
 
 export const DEFAULT_SETTINGS: Settings = {
   correctionMode: 'friendly',
@@ -30,7 +33,8 @@ export const DEFAULT_SETTINGS: Settings = {
   llmBaseUrl: 'http://10.0.2.2:11434/v1',
   llmModel: 'llama3.2',
   llmApiKey: '',
-  updateRepo: '',
+  updateRepo: DEFAULT_UPDATE_REPO,
+  autoCheckUpdates: true,
   fontScale: 1,
   highContrast: false,
   ttsRate: 0.9,

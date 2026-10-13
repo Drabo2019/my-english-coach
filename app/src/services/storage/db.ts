@@ -91,4 +91,5 @@ export async function wipeAll(): Promise<void> {
 export async function wipeConversations(): Promise<void> {
   const db = await getDb();
   await db.runAsync('DELETE FROM convo');
+  await db.runAsync("DELETE FROM kv WHERE k = 'memory'");
 }

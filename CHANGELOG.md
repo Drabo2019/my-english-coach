@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.0] - 2026-10-12
+- Backup: export your whole progress as a JSON file (Settings → Backup) and restore it on any install. The LLM API key is never included; restoring asks for confirmation and replaces local data atomically.
+- Automatic update check: once a day at startup (silent, can be disabled), with a banner on Home. The GitHub repository is now preset, so Settings no longer needs to be filled in.
+- AI partner: replies stream in as they are generated; a setup guide with a connection test (Settings → AI conversation partner → Setup guide) lists the models your Ollama exposes; the partner remembers recent conversations, your frequent mistakes and words you keep forgetting (deleted with “Delete conversation history”).
+- Note: on-device voices (Whisper/Kokoro via sherpa-onnx) were evaluated and deliberately NOT integrated yet: see docs/AI_RESEARCH.md.
+
 ## [0.2.2] - 2026-10-12
 - Content: sentences 434 → 504 (spoken fillers to gain time, French-speaker traps as correct models, bank/post/transport/housing, feelings). MVP content targets are now all met.
 

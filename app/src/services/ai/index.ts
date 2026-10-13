@@ -2,7 +2,10 @@ import { analyze, type Finding } from '@/features/corrector';
 import { findPhrase, type PhraseEntry } from '@/data/phrasebook';
 import type { CorrectionMode, Profile, Scenario } from '@/types';
 import { LEVELS } from '@/types';
+import { fetch as streamFetch } from 'expo/fetch';
+
 import { getSettings, type Settings } from '../storage/repo';
+import { parseSse } from './sse';
 
 export interface Turn {
   role: 'ai' | 'user';
@@ -14,6 +17,7 @@ export interface ReplyContext {
   history: Turn[];
   profile: Profile;
   mode: CorrectionMode;
+  memory?: string; // what the app remembers about the learner (see memory.ts)
 }
 
 export interface ReviewResult {
@@ -26,6 +30,8 @@ export interface ConversationAIProvider {
   readonly id: string;
   readonly online: boolean;
   reply(ctx: ReplyContext): Promise<string>;
+  /** Same as reply() but calls onToken as text arrives (LLM only; others emit the whole text at once). */
+  replyStream(ctx: ReplyContext, onToken: (partial: string) => void): Promise<string>;
   review(ctx: ReplyContext): Promise<ReviewResult>;
   howToSay(fr: string, profile: Profile): Promise<PhraseEntry | null>;
 }
@@ -61,6 +67,11 @@ export const scriptedProvider: ConversationAIProvider = {
     }
     return `${react} ${FOLLOW_UPS[userTurns % FOLLOW_UPS.length]}`;
   },
+  async replyStream(ctx, onToken) {
+    const t = await scriptedProvider.reply(ctx);
+    onToken(t);
+    return t;
+  },
   async review({ history }) {
     const users = history.filter((t) => t.role === 'user');
     const findings = users.flatMap((u) => analyze(u.text));
@@ -95,7 +106,10 @@ function systemPrompt(ctx: ReplyContext): string {
     scenario ? `Scenario: ${scenario.persona}. Goal for the learner: ${scenario.goal}.` : 'Free conversation: follow the learner’s topics.',
     MODE_RULES[mode],
     'Reply in 1–3 short sentences, then ask at most one question. Never lecture. Never write French unless asked.',
-  ].join('\n');
+    ctx.memory ? `What you remember about this learner (use it naturally, do not recite it):\n${ctx.memory}` : '',
+  ]
+    .filter(Boolean)
+    .join('\n');
 }
 
 async function chat(s: Settings, messages: { role: string; content: string }[], json = false): Promise<string> {
@@ -124,6 +138,68 @@ async function chat(s: Settings, messages: { role: string; content: string }[], 
   }
 }
 
+async function chatStream(s: Settings, messages: { role: string; content: string }[], onToken: (partial: string) => void): Promise<string> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 60_000);
+  try {
+    const res = await streamFetch(`${s.llmBaseUrl.replace(/\/$/, '')}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(s.llmApiKey ? { Authorization: `Bearer ${s.llmApiKey}` } : {}),
+      },
+      body: JSON.stringify({ model: s.llmModel, messages, temperature: 0.7, stream: true }),
+      signal: ctrl.signal,
+    });
+    if (!res.ok) throw new Error(`LLM HTTP ${res.status}`);
+    if (!res.body) throw new Error('No stream');
+    const reader = res.body.getReader();
+    const dec = new TextDecoder();
+    let buf = '';
+    let full = '';
+    for (;;) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      const r = parseSse(buf);
+      buf = r.rest;
+      for (const t of r.tokens) {
+        full += t;
+        onToken(full);
+      }
+      if (r.done) break;
+    }
+    if (!full.trim()) throw new Error('Empty LLM reply');
+    return full.trim();
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/** Lists the models the endpoint serves. Used by the AI setup screen to diagnose connection problems. */
+export async function testLlmConnection(s: Pick<Settings, 'llmBaseUrl' | 'llmApiKey'>): Promise<{ ok: boolean; models: string[]; error?: string }> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 8_000);
+  try {
+    const res = await fetch(`${s.llmBaseUrl.replace(/\/$/, '')}/models`, {
+      headers: s.llmApiKey ? { Authorization: `Bearer ${s.llmApiKey}` } : {},
+      signal: ctrl.signal,
+    });
+    if (!res.ok) return { ok: false, models: [], error: `HTTP ${res.status}` };
+    const j = await res.json();
+    const models = ((j.data ?? j.models ?? []) as { id?: string; name?: string }[]).map((m) => String(m.id ?? m.name)).filter(Boolean);
+    return { ok: true, models };
+  } catch (e) {
+    const msg =
+      e instanceof Error && e.name === 'AbortError'
+        ? 'Timeout: no answer within 8 s (wrong IP, firewall, or the server is not listening on the network).'
+        : String(e);
+    return { ok: false, models: [], error: msg };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 const safeJson = <T,>(s: string): T | null => {
   try {
     const m = s.match(/\{[\s\S]*\}/);
@@ -143,6 +219,13 @@ export function openAICompatProvider(s: Settings): ConversationAIProvider {
         ...ctx.history.map((t) => ({ role: t.role === 'ai' ? 'assistant' : 'user', content: t.text })),
       ];
       return chat(s, msgs);
+    },
+    async replyStream(ctx, onToken) {
+      const msgs = [
+        { role: 'system', content: systemPrompt(ctx) },
+        ...ctx.history.map((t) => ({ role: t.role === 'ai' ? 'assistant' : 'user', content: t.text })),
+      ];
+      return chatStream(s, msgs, onToken);
     },
     async review(ctx) {
       const convo = ctx.history.map((t) => `${t.role === 'ai' ? 'Partner' : 'Learner'}: ${t.text}`).join('\n');
@@ -202,6 +285,24 @@ export async function getAI(): Promise<AIRouter> {
         }
       }
       return scriptedProvider.reply(ctx);
+    },
+    async replyStream(ctx, onToken) {
+      if (online) {
+        try {
+          return await online.replyStream(ctx, onToken);
+        } catch (e) {
+          router.lastError = String(e);
+          try {
+            // some servers/proxies do not stream: retry once without streaming
+            const t = await online.reply(ctx);
+            onToken(t);
+            return t;
+          } catch (e2) {
+            router.lastError = String(e2);
+          }
+        }
+      }
+      return scriptedProvider.replyStream(ctx, onToken);
     },
     async review(ctx) {
       const offline = await scriptedProvider.review(ctx);

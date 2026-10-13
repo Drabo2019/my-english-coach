@@ -22,6 +22,8 @@ app/                      Expo project (the only deployable)
       storage/            db.ts (SQLite + migrations), repo.ts (queries), defaults.ts
       updates/            GitHub Releases checker + APK download/install, version.ts
       notifications.ts    smart evening reminder from real data
+      backup.ts           JSON export/import (format + validation in backup-format.ts, pure)
+      ai/memory.ts        conversation memory injected into the LLM prompt; ai/sse.ts streaming parser
     data/                 bundled content (vocabulary, sentences, grammar, scenarios, reading, listening, phrasebook…)
     types/ constants/ hooks/
   plugins/withReleaseSigning.js   config plugin: signs with your keystore

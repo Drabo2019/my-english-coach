@@ -41,3 +41,20 @@ Legend: ✔ yes · ✘ no · ~ partial · ? unknown
 - Piper licence change report: reelmind.ai / OHF-Voice repository listing
 - Local-LLM sizing: Hugging Face "LLM inference on edge" and library pages
 - expo-speech-recognition README/types: github.com/jamsch/expo-speech-recognition and the installed package's `.d.ts`
+
+## Spike: react-native-sherpa-onnx (2026-10-12)
+
+Source: the library README (github.com/XDcobra/react-native-sherpa-onnx), read, not run.
+
+| Item | Finding |
+|---|---|
+| What | RN TurboModule around sherpa-onnx 1.12.x. Offline + streaming STT (Zipformer, Paraformer, **Whisper**), TTS (VITS/**Piper voices**, Matcha, **Kokoro**), mic capture API. |
+| Platforms | Android API 24+ and iOS 13+. |
+| Model delivery | bundled assets, file paths, Play Asset Delivery, or runtime download via a download manager. Model type auto-detected. |
+| License | SDK MIT; sherpa-onnx Apache-2.0; ONNX Runtime MIT; bundles FFmpeg (LGPL 2.1). Models have their own licences (check each card). |
+| Maturity | ~40 stars, v0.3.0 with breaking changes from 0.2.x: young, single maintainer. |
+| Cost to us | extra native libs in the APK (tens of MB per ABI) + a model download (Whisper tiny/base 75-145 MB; Kokoro roughly 100 MB class, to be confirmed on the model card). |
+
+**Decision: not integrated blind.** It is feasible, but (1) quality can only be judged by listening/speaking on the phone, which cannot be verified from the build machine, (2) a young native dependency can crash at startup and would put the working app at risk, (3) the Android recogniser may already be good enough on your phone. Gate: integrate only if the real-user test shows the Android STT/TTS is the bottleneck. The `STTProvider` / `TTSProvider` interfaces mean it is a one-file swap plus a model downloader and a setting to choose the engine.
+
+Suggested integration plan when the gate is passed: add the library behind a setting "Voice engine: Android | On-device (sherpa-onnx)", default Android; download models on demand over Wi-Fi with a progress UI; keep Android as automatic fallback; ship as an opt-in release first.

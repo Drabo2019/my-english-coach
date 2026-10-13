@@ -8,6 +8,7 @@ import { SCENARIOS } from '@/data/scenarios';
 import { useApp } from '@/features/app-context';
 import { useTheme } from '@/hooks/use-theme';
 import { getAI, type ReviewResult, type Turn } from '@/services/ai';
+import { memoryPrompt, offlineSummary, remember } from '@/services/ai/memory';
 import { stt, tts } from '@/services/speech';
 import { addTurn, logActivity, recordMistake } from '@/services/storage/repo';
 import type { CorrectionMode } from '@/types';
@@ -42,6 +43,7 @@ export function ConversationView({ scenarioId }: { scenarioId: string | null }) 
   const session = useRef(`s${Date.now()}`);
   const started = useRef(Date.now());
   const scroll = useRef<ScrollView>(null);
+  const memory = useRef('');
 
   const say = (text: string) => tts.speak(text, { rate: settings.correctionMode === 'beginner' ? 0.7 : settings.ttsRate });
 
@@ -50,6 +52,9 @@ export function ConversationView({ scenarioId }: { scenarioId: string | null }) 
     setHistory([{ role: 'ai', text: opening }]);
     addTurn(session.current, 'ai', opening);
     say(opening);
+    memoryPrompt().then((m) => {
+      memory.current = m;
+    });
     return () => tts.stop();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -71,9 +76,19 @@ export function ConversationView({ scenarioId }: { scenarioId: string | null }) 
     try {
       const ai = await getAI();
       setAiLabel(ai.online ? ai.id : 'offline');
-      const reply = await ai.reply({ scenario, history: next, profile, mode: settings.correctionMode });
+      // streamed: the partner's text appears as it is generated; the voice speaks the final text
+      let placeholderAdded = false;
+      const reply = await ai.replyStream({ scenario, history: next, profile, mode: settings.correctionMode, memory: memory.current }, (partial) => {
+        setThinking(false);
+        setHistory((h) => {
+          if (!placeholderAdded) {
+            placeholderAdded = true;
+            return [...h, { role: 'ai', text: partial }];
+          }
+          return [...h.slice(0, -1), { role: 'ai', text: partial }];
+        });
+      });
       if (ai.lastError) setErr(`AI unreachable, using offline mode (${ai.lastError.slice(0, 80)})`);
-      setHistory((h) => [...h, { role: 'ai', text: reply }]);
       addTurn(session.current, 'ai', reply);
       say(reply);
     } finally {
@@ -106,6 +121,13 @@ export function ConversationView({ scenarioId }: { scenarioId: string | null }) 
     const ai = await getAI();
     const r = await ai.review({ scenario, history, profile, mode: settings.correctionMode });
     for (const f of r.findings) await recordMistake({ category: f.category, original: f.original, correction: f.correction, explanation: f.explanation, severity: f.severity });
+    await remember({
+      ts: Date.now(),
+      topic: scenario?.title ?? 'Free talk',
+      turns: userTurns,
+      summary: offlineSummary(scenario?.title ?? 'Free talk', history),
+      mistakes: r.findings.map((f) => f.correction),
+    });
     setReview(r);
   };
 

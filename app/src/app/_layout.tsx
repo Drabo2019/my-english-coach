@@ -5,6 +5,7 @@ import { useColorScheme } from 'react-native';
 
 import { AppProvider, useApp } from '@/features/app-context';
 import { scheduleSmartReminder } from '@/services/notifications';
+import { autoCheckForUpdate } from '@/services/updates/auto';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,6 +25,10 @@ function Gate() {
   useEffect(() => {
     if (ready && profile.onboarded) scheduleSmartReminder(settings.notifications).catch(() => {});
   }, [ready, profile.onboarded, settings.notifications]);
+
+  useEffect(() => {
+    if (ready && profile.onboarded) autoCheckForUpdate(settings.updateRepo, settings.autoCheckUpdates).catch(() => {});
+  }, [ready, profile.onboarded, settings.updateRepo, settings.autoCheckUpdates]);
 
   if (!ready) return null;
   return (

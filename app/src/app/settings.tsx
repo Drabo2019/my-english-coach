@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router';
+import { Stack, router } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, Linking, Switch } from 'react-native';
 
@@ -8,6 +8,8 @@ import { scheduleSmartReminder } from '@/services/notifications';
 import { wipeAll, wipeConversations } from '@/services/storage/db';
 import { checkForUpdate, currentVersion, downloadAndInstall, type UpdateInfo } from '@/services/updates';
 import { useTheme } from '@/hooks/use-theme';
+import { exportBackup, lastBackupAt, pickBackup, restoreBackup } from '@/services/backup';
+import { DEFAULT_UPDATE_REPO } from '@/services/storage/defaults';
 
 export default function Settings() {
   const th = useTheme();
@@ -15,12 +17,59 @@ export default function Settings() {
   const [upd, setUpd] = useState<UpdateInfo | null>(null);
   const [msg, setMsg] = useState('');
   const [progress, setProgress] = useState<number | null>(null);
+  const [backupMsg, setBackupMsg] = useState('');
+  const [lastBackup, setLastBackup] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    lastBackupAt().then(setLastBackup);
+  }, []);
+
+  const doExport = async () => {
+    setBackupMsg('Preparing…');
+    try {
+      const r = await exportBackup();
+      setLastBackup(new Date().toISOString());
+      setBackupMsg(`Backup ready (${r.cards} cards). Save it somewhere safe (Drive, e-mail to yourself…).`);
+    } catch (e) {
+      setBackupMsg(String(e instanceof Error ? e.message : e));
+    }
+  };
+
+  const doImport = async () => {
+    try {
+      const picked = await pickBackup();
+      if (!picked) return;
+      const { summary } = picked;
+      Alert.alert(
+        'Restore this backup?',
+        `${summary.cards} cards · ${summary.mistakes} mistakes · ${summary.minutes} min of practice\nSaved ${summary.exportedAt.slice(0, 10)}\n\nThis REPLACES all the data currently on this phone.`,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Restore',
+            style: 'destructive',
+            onPress: async () => {
+              try {
+                await restoreBackup(picked.file);
+                await reload();
+                setBackupMsg('Backup restored.');
+              } catch (e) {
+                setBackupMsg(`Restore failed: ${e instanceof Error ? e.message : e}`);
+              }
+            },
+          },
+        ],
+      );
+    } catch (e) {
+      setBackupMsg(String(e instanceof Error ? e.message : e));
+    }
+  };
 
   const check = async () => {
     setMsg('Checking…');
     setUpd(null);
     try {
-      const u = await checkForUpdate(settings.updateRepo.trim());
+      const u = await checkForUpdate(settings.updateRepo.trim() || DEFAULT_UPDATE_REPO);
       setUpd(u);
       setMsg(u.available ? 'A new version is available.' : 'You are up to date.');
     } catch (e) {
@@ -36,6 +85,10 @@ export default function Settings() {
         <T v="h2">{`Version ${currentVersion()}`}</T>
         <T v="small" dim>GitHub repository hosting the APK releases (owner/repo):</T>
         <SavedInput value={settings.updateRepo} onSave={(v) => updateSettings({ updateRepo: v })} placeholder="owner/my-english-coach" autoCapitalize="none" />
+        <Row style={{ justifyContent: 'space-between' }}>
+          <T style={{ flex: 1 }}>Check automatically once a day</T>
+          <Switch value={settings.autoCheckUpdates} onValueChange={(v) => updateSettings({ autoCheckUpdates: v })} />
+        </Row>
         <Btn kind="ghost" label="Check for updates" onPress={check} />
         {!!msg && <T>{msg}</T>}
         {upd?.available && (
@@ -70,6 +123,7 @@ export default function Settings() {
           <T style={{ flex: 1 }}>Use an LLM (otherwise: offline scripted mode)</T>
           <Switch value={settings.llmEnabled} onValueChange={(v) => updateSettings({ llmEnabled: v })} />
         </Row>
+        <Btn small kind="ghost" label="Setup guide + test connection" onPress={() => router.push('/ai-setup')} />
         <T v="small" dim>Endpoint compatible OpenAI : Ollama (http://IP-du-PC:11434/v1), LM Studio, llama.cpp server, ou une API cloud. Ton texte (pas l’audio) est envoyé à cette adresse.</T>
         <SavedInput value={settings.llmBaseUrl} onSave={(v) => updateSettings({ llmBaseUrl: v })} placeholder="Base URL" autoCapitalize="none" />
         <SavedInput value={settings.llmModel} onSave={(v) => updateSettings({ llmModel: v })} placeholder="Model name" autoCapitalize="none" />
@@ -128,6 +182,15 @@ export default function Settings() {
             }}
           />
         </Row>
+      </Card>
+
+      <Card>
+        <T v="h2">Backup</T>
+        <T v="small" dim>Tout est stocké sur ce téléphone. Exporte un fichier JSON (progression, mots, erreurs, favoris, historique) pour changer de téléphone ou te protéger d’une désinstallation. Ta clé d’API n’est jamais incluse.</T>
+        <T v="small">{`Last backup: ${lastBackup ? lastBackup.slice(0, 10) : 'never'}`}</T>
+        <Btn kind="ghost" label="Export backup (JSON)" onPress={doExport} />
+        <Btn kind="ghost" label="Restore from a backup file" onPress={doImport} />
+        {!!backupMsg && <T v="small">{backupMsg}</T>}
       </Card>
 
       <Card>
