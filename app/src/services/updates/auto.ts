@@ -29,3 +29,10 @@ export async function autoCheckForUpdate(repo: string, enabled: boolean): Promis
     return cachedUpdate();
   }
 }
+
+/** Manual check (button): always hits the network, caches the answer, throws on failure so the UI can say why. */
+export async function refreshUpdate(repo: string): Promise<UpdateInfo> {
+  const info = await checkForUpdate(repo.trim() || DEFAULT_UPDATE_REPO);
+  await kvSet('updateCheck', { checkedAt: Date.now(), info } satisfies Cached);
+  return info;
+}

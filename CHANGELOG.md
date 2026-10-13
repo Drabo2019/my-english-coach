@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.5.2] - 2026-10-13
+- Home: a visible "Check for updates" button; when a newer version exists, a card with the release notes and an "Update now" button (download + Android installer) right on the home screen.
+
 ## [0.5.1] - 2026-10-13
 - Feedback export now starts with the app version and the phone model, so test reports can be traced.
 

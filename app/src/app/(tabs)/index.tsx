@@ -3,13 +3,13 @@ import React from 'react';
 
 import { Bar, Btn, Card, Row, Screen, T, Tag } from '@/components/ui';
 import { useApp } from '@/features/app-context';
+import { UpdateCard } from '@/features/UpdateCard';
 import { levelLabel, overallIndex, weaknesses } from '@/features/placement';
 import { buildPlan } from '@/features/plan';
 import { isDifficult } from '@/features/srs';
 import { useLoad } from '@/hooks/use-load';
 import { allCards, dueCards, minutesToday, secondsBySkill, streakDays, topMistakes } from '@/services/storage/repo';
 import { currentVersion } from '@/services/updates';
-import { cachedUpdate } from '@/services/updates/auto';
 
 export default function Home() {
   const { profile } = useApp();
@@ -20,7 +20,6 @@ export default function Home() {
     return { due: due.length, difficult: cards.filter(isDifficult).length, mins, top: mistakes[0], streak, week };
   }, [profile]);
 
-  const [upd] = useLoad(cachedUpdate);
   const overall = levelLabel(overallIndex(profile.levels));
   const plan = d
     ? buildPlan({ profile, dueCount: d.due, difficultCount: d.difficult, topMistake: d.top, minutesDoneToday: d.mins })
@@ -44,12 +43,7 @@ export default function Home() {
         <Bar value={(d?.mins ?? 0) / goal} tone="good" />
       </Card>
 
-      {upd?.available && (
-        <Card tone="accent" onPress={() => router.push('/settings')}>
-          <T style={{ fontWeight: '600' }}>{`A new version is available: ${upd.latest}`}</T>
-          <T v="small" dim>Tap to update (Settings → Download & install).</T>
-        </Card>
-      )}
+      <UpdateCard />
 
       <Btn label="🎙 Talk to me" onPress={() => router.push('/speak/free')} />
 

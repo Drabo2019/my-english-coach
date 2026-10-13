@@ -29,7 +29,7 @@ Files: `app/src/services/updates/index.ts` (+ `version.ts`), UI in `app/src/app/
 
 ## Notification of a new version
 
-Since 0.3.0 the app checks automatically **at most once per 24 h** at startup (silent on failure; can be disabled in Settings) and shows a banner on Home when a newer version exists. The default repository is `Drabo2019/my-english-coach`. The result is cached in the `kv` table (`updateCheck`) and re-evaluated against the installed version, so the banner disappears right after you update. GitHub's unauthenticated limit is 60 req/h per IP, far above one call a day.
+Since 0.5.2 Home also has a **Check for updates** button and, when a newer version exists, an **Update now** card (`features/UpdateCard.tsx`). Since 0.3.0 the app checks automatically **at most once per 24 h** at startup (silent on failure; can be disabled in Settings) and shows a banner on Home when a newer version exists. The default repository is `Drabo2019/my-english-coach`. The result is cached in the `kv` table (`updateCheck`) and re-evaluated against the installed version, so the banner disappears right after you update. GitHub's unauthenticated limit is 60 req/h per IP, far above one call a day.
 
 ## Data migration between versions
 
