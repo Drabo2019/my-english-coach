@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.5.0] - 2026-10-13
+- Advanced learners: the level test now reaches C2 (vocabulary, grammar, reading, listening, a C1 spoken repeat) and the estimate no longer under-rates strong learners. Retake it from Settings -> Learning.
+- New C1/C2 content: 61 sentences (nuance, diplomacy, negotiation, inversion, mixed conditionals, subjunctive, cleft sentences, idioms), 45 words (incl. phrasal verbs and false friends), 6 grammar topics, 5 reading texts, 3 listenings, 5 Find-the-words situations. Shadowing now offers C1 and C2.
+- Docs: tester guide (docs/GUIDE-TESTEURS.md, with HTML/PDF in docs/guides).
+
 ## [0.4.0] - 2026-10-13
 - Find the words: measures the time before your first words (hesitation) and gives a short comment.
 - New Speak → Shadowing: listen to a sentence, then repeat it at once; choose level (A1–B2) and speed (slow / normal / native); word-level score.

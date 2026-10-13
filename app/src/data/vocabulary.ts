@@ -1,6 +1,7 @@
 import type { VocabItem } from '@/types';
 
 import { v } from './vocab-builder';
+import { VOCAB_ADVANCED } from './vocabulary-advanced';
 import { VOCAB_EXTRA } from './vocabulary-extra';
 
 export const CATEGORIES = [
@@ -191,6 +192,6 @@ const VOCAB_CORE: VocabItem[] = [
   v('connectors', 'otherwise', '/ˈʌðəwaɪz/', 'adv', 'sinon', 'B1', 'Hurry up, otherwise we’ll be late.', 'Dépêche-toi, sinon on sera en retard.'),
 ];
 
-export const VOCAB: VocabItem[] = [...VOCAB_CORE, ...VOCAB_EXTRA];
+export const VOCAB: VocabItem[] = [...VOCAB_CORE, ...VOCAB_EXTRA, ...VOCAB_ADVANCED];
 
 export const vocabById = (id: string) => VOCAB.find((x) => x.id === id);

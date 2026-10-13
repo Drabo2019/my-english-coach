@@ -1,5 +1,6 @@
 import type { ListeningItem, PronunciationPair, ReadingText, Resource } from '@/types';
 
+import { LISTENING_ADVANCED, READING_ADVANCED } from './content-advanced';
 import { LISTENING_EXTRA, PRONUNCIATION_EXTRA, READING_EXTRA } from './content-extra';
 
 const READING_CORE: ReadingText[] = [
@@ -77,8 +78,8 @@ const PRONUNCIATION_CORE: PronunciationPair[] = [
   { id: 'p12', a: 'full', b: 'fool', sounds: '/ʊ/ vs /uː/', tip: 'court/long de nouveau.', sentence: 'The fool was full of joy.' },
 ];
 
-export const READING: ReadingText[] = [...READING_CORE, ...READING_EXTRA];
-export const LISTENING: ListeningItem[] = [...LISTENING_CORE, ...LISTENING_EXTRA];
+export const READING: ReadingText[] = [...READING_CORE, ...READING_EXTRA, ...READING_ADVANCED];
+export const LISTENING: ListeningItem[] = [...LISTENING_CORE, ...LISTENING_EXTRA, ...LISTENING_ADVANCED];
 export const PRONUNCIATION: PronunciationPair[] = [...PRONUNCIATION_CORE, ...PRONUNCIATION_EXTRA];
 
 export const RESOURCES: Resource[] = [

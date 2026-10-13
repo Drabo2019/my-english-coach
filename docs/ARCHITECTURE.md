@@ -46,7 +46,7 @@ docs/                     this folder
 
 ## Key flows
 
-- **Onboarding → placement → profile**: goals/time/domain → 18 MCQ + 3 spoken repeats → fractional CEFR per skill + weaknesses.
+- **Onboarding → placement → profile**: goals/time/domain → 27 MCQ (A1 to C2) + 4 spoken repeats → fractional CEFR per skill + weaknesses.
 - **Today's plan**: `buildPlan(profile, due, difficult, topMistake, minutesDone)` → 1–5 blocks whose minutes add up to the remaining daily goal; speaking always favoured.
 - **Conversation**: user turn (STT or typed) → `ai.reply()` → TTS. On Finish: `ai.review()` → rule-based + (optional) LLM findings → stored in `mistakes` → shown ❌/✅ with reason and a natural version.
 - **Review**: due cards + ≤5 new; grade (again/hard/good/easy) is suggested from how close your typed/spoken answer was; production flag drives ACTIVE/MASTERED.

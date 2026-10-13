@@ -8,7 +8,7 @@ import { pronunciation, stt, tts } from '@/services/speech';
 import { addScore, logActivity } from '@/services/storage/repo';
 import type { Level } from '@/types';
 
-const LEVELS: Level[] = ['A1', 'A2', 'B1', 'B2'];
+const LEVELS: Level[] = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 const RATES = [
   { label: 'Slow', rate: 0.65 },
   { label: 'Normal', rate: 0.85 },
@@ -24,7 +24,7 @@ export default function Shadowing() {
   const [res, setRes] = useState<{ score: number; heard: string; words: { word: string; ok: boolean }[] } | null>(null);
   const [err, setErr] = useState('');
 
-  const pool = useMemo(() => SENTENCES.filter((x) => x.level === level && x.en.split(' ').length <= 12), [level]);
+  const pool = useMemo(() => SENTENCES.filter((x) => x.level === level && x.en.split(' ').length <= (x.level === 'C1' || x.level === 'C2' ? 18 : 12)), [level]);
   const sentence = pool[i % Math.max(pool.length, 1)];
 
   const run = async () => {

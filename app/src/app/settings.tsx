@@ -152,6 +152,7 @@ export default function Settings() {
         </Row>
         <T v="small" dim>Professional domain</T>
         <SavedInput value={profile.domain} onSave={(v) => updateProfile({ domain: v })} />
+        <Btn small kind="ghost" label="Retake the level test (A1 → C2)" onPress={() => router.push('/placement')} />
       </Card>
 
       <Card>

@@ -1,5 +1,6 @@
 import type { GrammarTopic } from '@/types';
 
+import { GRAMMAR_ADVANCED } from './grammar-advanced';
 import { GRAMMAR_EXTRA } from './grammar-extra';
 
 type Q = [string, string[], number, string?];
@@ -331,4 +332,4 @@ const GRAMMAR_CORE: GrammarTopic[] = [
   },
 ];
 
-export const GRAMMAR: GrammarTopic[] = [...GRAMMAR_CORE, ...GRAMMAR_EXTRA];
+export const GRAMMAR: GrammarTopic[] = [...GRAMMAR_CORE, ...GRAMMAR_EXTRA, ...GRAMMAR_ADVANCED];

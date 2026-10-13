@@ -1,5 +1,6 @@
 import type { FindWordsTask, Level, Scenario } from '@/types';
 
+import { FIND_WORDS_ADVANCED } from './content-advanced';
 import { FIND_WORDS_EXTRA, SCENARIOS_EXTRA } from './scenarios-extra';
 
 type Turn = { ai: string; hints: string[]; keywords?: string[] };
@@ -85,4 +86,4 @@ const FIND_WORDS_CORE: FindWordsTask[] = [
 ];
 
 export const SCENARIOS: Scenario[] = [...SCENARIOS_CORE, ...SCENARIOS_EXTRA];
-export const FIND_WORDS: FindWordsTask[] = [...FIND_WORDS_CORE, ...FIND_WORDS_EXTRA];
+export const FIND_WORDS: FindWordsTask[] = [...FIND_WORDS_CORE, ...FIND_WORDS_EXTRA, ...FIND_WORDS_ADVANCED];

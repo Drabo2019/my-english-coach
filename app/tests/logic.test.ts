@@ -40,6 +40,22 @@ describe('content integrity', () => {
   });
 });
 
+describe('advanced content (C1/C2)', () => {
+  it('has enough material for advanced learners', () => {
+    const adv = (l: { level: string }) => l.level === 'C1' || l.level === 'C2';
+    expect(SENTENCES.filter(adv).length).toBeGreaterThanOrEqual(50);
+    expect(VOCAB.filter(adv).length).toBeGreaterThanOrEqual(30);
+    expect(GRAMMAR.filter(adv).length).toBeGreaterThanOrEqual(5);
+    expect(READING.filter(adv).length).toBeGreaterThanOrEqual(5);
+    expect(LISTENING.filter(adv).length).toBeGreaterThanOrEqual(3);
+    expect(FIND_WORDS.filter(adv).length).toBeGreaterThanOrEqual(5);
+  });
+  it('sentence ids stay unique across all sets', () => {
+    const ids = SENTENCES.map((s) => s.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+});
+
 describe('content volume (regression guard)', () => {
   it('does not shrink below the 0.2 baseline', () => {
     expect(VOCAB.length).toBeGreaterThanOrEqual(300);
@@ -129,6 +145,13 @@ describe('similarity, placement, plan, versions', () => {
     expect(estimate('grammar', all)!).toBeGreaterThan(estimate('grammar', none)!);
     const p = applyPlacement(DEFAULT_PROFILE, all, [80, 90], 'low');
     expect(p.levels.speaking).toBeLessThanOrEqual(p.levels.listening);
+  });
+  it('placement reaches C1/C2 and does not under-rate a B2 learner', () => {
+    const upTo = (max: number) => Object.fromEntries(PLACEMENT.map((p) => [p.id, LEVELS.indexOf(p.level) <= max]));
+    expect(estimate('grammar', upTo(4))!).toBeCloseTo(4, 0);
+    expect(estimate('grammar', upTo(6))!).toBe(6);
+    expect(estimate('vocabulary', upTo(5))!).toBeGreaterThanOrEqual(5);
+    expect(estimate('vocabulary', upTo(2))!).toBeLessThan(3.5);
   });
   it('plan favours speaking when speaking is the weakness, and fits the time budget', () => {
     const profile = { ...DEFAULT_PROFILE, minutesPerDay: 15, levels: { ...DEFAULT_PROFILE.levels, grammar: 3, vocabulary: 3, speaking: 1 } };

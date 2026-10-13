@@ -2,6 +2,7 @@ import type { Level, Register, Sentence } from '@/types';
 
 import { SENTENCES_EXTRA } from './sentences-extra';
 import { SENTENCES_EXTRA2 } from './sentences-extra2';
+import { SENTENCES_ADVANCED } from './sentences-advanced';
 import { SENTENCES_EXTRA3 } from './sentences-extra3';
 
 let n = 0;
@@ -146,4 +147,4 @@ const SENTENCES_CORE: Sentence[] = [
 ];
 
 // Core ids (s0001…) are frozen: user progress references them. New sentences live in sentences-extra.ts (ids t0001…).
-export const SENTENCES: Sentence[] = [...SENTENCES_CORE, ...SENTENCES_EXTRA, ...SENTENCES_EXTRA2, ...SENTENCES_EXTRA3];
+export const SENTENCES: Sentence[] = [...SENTENCES_CORE, ...SENTENCES_EXTRA, ...SENTENCES_EXTRA2, ...SENTENCES_EXTRA3, ...SENTENCES_ADVANCED];
