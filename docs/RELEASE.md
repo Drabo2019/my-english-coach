@@ -16,7 +16,7 @@
 git commit -am "Release 0.2.0" && git tag v0.2.0 && git push --follow-tags
 ```
 
-GitHub Actions (`.github/workflows/release.yml`) runs tests, builds the signed APK and attaches `my-english-coach-0.2.0.apk` to a GitHub Release whose body is the release notes. The app then offers it under Settings → *Check for updates*.
+GitHub Actions (`.github/workflows/release.yml`) runs tests, builds the signed APK and attaches `my-english-coach-<version>.apk` (plus a copy named `my-english-coach.apk`, so that `https://github.com/Drabo2019/my-english-coach/releases/latest/download/my-english-coach.apk` is a permanent direct-download link) to a GitHub Release whose body is the release notes. The app then offers it under Settings → *Check for updates*.
 
 ## Build locally
 

@@ -44,7 +44,10 @@ jobs:
           VER=$(node -p "require('./app.json').expo.version")
           mkdir -p ../dist
           cp android/app/build/outputs/apk/release/app-release.apk "../dist/my-english-coach-$VER.apk"
+          # Stable name: .../releases/latest/download/my-english-coach.apk always points to the newest APK.
+          cp android/app/build/outputs/apk/release/app-release.apk "../dist/my-english-coach.apk"
           echo "path=dist/my-english-coach-$VER.apk" >> "$GITHUB_OUTPUT"
+          echo "alias=dist/my-english-coach.apk" >> "$GITHUB_OUTPUT"
       - name: Release notes from CHANGELOG
         run: |
           VER=${GITHUB_REF_NAME#v}
@@ -52,5 +55,7 @@ jobs:
           [ -s ../notes.md ] || echo "Release $VER" > ../notes.md
       - uses: softprops/action-gh-release@v2
         with:
-          files: ${{ steps.apk.outputs.path }}
+          files: |
+            ${{ steps.apk.outputs.path }}
+            ${{ steps.apk.outputs.alias }}
           body_path: notes.md

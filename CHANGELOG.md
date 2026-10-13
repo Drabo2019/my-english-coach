@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+- Release workflow also publishes `my-english-coach.apk` (stable name) so a permanent direct-download link exists; docs and tester guide point to it.
+
 ## [0.5.2] - 2026-10-13
 - Home: a visible "Check for updates" button; when a newer version exists, a card with the release notes and an "Update now" button (download + Android installer) right on the home screen.
 

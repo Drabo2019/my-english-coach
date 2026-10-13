@@ -9,7 +9,7 @@ Personal English coach for a French speaker: **understand → remember → build
 
 ## Install (Android)
 
-1. Get the APK: `dist/my-english-coach-0.1.0.apk` (built locally) or the latest GitHub Release.
+1. Get the APK: [**download the latest APK**](https://github.com/Drabo2019/my-english-coach/releases/latest/download/my-english-coach.apk) (always the newest release; release notes on the [Releases page](https://github.com/Drabo2019/my-english-coach/releases/latest)), or build it locally into `dist/`.
 2. Copy it to the phone and open it; allow "install from this source" once.
 3. Open the app → allow the microphone → complete onboarding and the level check.
 
