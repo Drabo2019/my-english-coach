@@ -6,6 +6,7 @@ import { itemFor, pickNew, similarity, type ReviewItem } from '@/features/items'
 import { isDifficult, newCard, review, type Grade } from '@/features/srs';
 import { useInnerBack } from '@/hooks/use-inner-back';
 import { useLoad } from '@/hooks/use-load';
+import { hapticTap } from '@/services/haptics';
 import { pronunciation, stt } from '@/services/speech';
 import { allCards, dueCards, getCard, logActivity, saveCard } from '@/services/storage/repo';
 import type { SrsCard } from '@/types';
@@ -98,6 +99,7 @@ export default function Review() {
   const suggested: Grade = sim >= 0.95 ? 2 : sim >= 0.6 ? 1 : typed || heard ? 0 : 1;
 
   const grade = async (g: Grade) => {
+    hapticTap();
     const ms = Date.now() - t0.current;
     const card = await getCard(item.cardId, item.kind);
     await saveCard(review(card, g, ms, produced || !!typed.trim()));

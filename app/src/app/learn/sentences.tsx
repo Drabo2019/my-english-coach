@@ -1,12 +1,13 @@
 import { Stack } from 'expo-router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-import { Btn, Card, Chip, Input, Row, Screen, Speak, T, Tag } from '@/components/ui';
+import { Appear, Btn, Card, Chip, Input, Row, Screen, Speak, T, Tag } from '@/components/ui';
 import { SENTENCES } from '@/data/sentences';
 import { useApp } from '@/features/app-context';
 import { norm, similarity } from '@/features/items';
 import { review as srsReview, newCard } from '@/features/srs';
 import { useTheme } from '@/hooks/use-theme';
+import { hapticSuccess, hapticWarning } from '@/services/haptics';
 import { pronunciation, stt } from '@/services/speech';
 import { getCard, logActivity, saveCard, toggleSaved } from '@/services/storage/repo';
 import { LEVELS, type Sentence } from '@/types';
@@ -76,6 +77,8 @@ export default function Sentences() {
 
   const finish = async (ok: boolean, note?: string) => {
     setResult({ ok, note });
+    if (ok) hapticSuccess();
+    else hapticWarning();
     await logActivity('speaking', (Date.now() - t0.current) / 1000, `sent:${mode}`);
     const c = await getCard(`sent:${s.id}`, 'sentence');
     await saveCard(srsReview(c.reps === 0 ? newCard(c.id, 'sentence') : c, ok ? 2 : 0, Date.now() - t0.current, true));
@@ -165,7 +168,7 @@ export default function Sentences() {
       )}
 
       {result && (
-        <>
+        <Appear>
           <Card tone={result.ok ? 'good' : 'bad'}>
             <T v="h2">{result.ok ? '✅ Good' : '❌ Not quite'}</T>
             <T>{s.en}</T>
@@ -177,7 +180,7 @@ export default function Sentences() {
             <Btn small kind="ghost" label={saved ? '⭐ Saved' : '☆ Save'} onPress={async () => setSaved(await toggleSaved('sentence', s.id))} />
             <Btn small label="Next" onPress={next} />
           </Row>
-        </>
+        </Appear>
       )}
     </Screen>
   );

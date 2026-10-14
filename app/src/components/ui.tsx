@@ -1,19 +1,21 @@
 import { router } from 'expo-router';
 import React from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View, type TextProps, type TextInputProps, type ViewStyle } from 'react-native';
+import { Animated, Pressable, ScrollView, StyleSheet, Text, TextInput, View, type TextProps, type TextInputProps, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useApp } from '@/features/app-context';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { useTheme } from '@/hooks/use-theme';
 import { tts } from '@/services/speech';
 
 type Variant = 'title' | 'h2' | 'body' | 'small' | 'label';
-const SIZE: Record<Variant, { fontSize: number; fontWeight?: '400' | '600' | '700'; lineHeight: number }> = {
-  title: { fontSize: 26, fontWeight: '700', lineHeight: 32 },
-  h2: { fontSize: 18, fontWeight: '600', lineHeight: 24 },
-  body: { fontSize: 16, lineHeight: 23 },
-  small: { fontSize: 13, lineHeight: 18 },
-  label: { fontSize: 12, fontWeight: '600', lineHeight: 16 },
+// Tracking follows size: large text is tightened, small text is opened a little (the system font ships its own optical sizing).
+const SIZE: Record<Variant, { fontSize: number; fontWeight?: '400' | '600' | '700'; lineHeight: number; letterSpacing: number }> = {
+  title: { fontSize: 26, fontWeight: '700', lineHeight: 32, letterSpacing: -0.3 },
+  h2: { fontSize: 18, fontWeight: '600', lineHeight: 24, letterSpacing: -0.1 },
+  body: { fontSize: 16, lineHeight: 23, letterSpacing: 0 },
+  small: { fontSize: 13, lineHeight: 18, letterSpacing: 0.1 },
+  label: { fontSize: 12, fontWeight: '600', lineHeight: 16, letterSpacing: 0.6 },
 };
 
 export function T({ v = 'body', dim, color, style, ...p }: TextProps & { v?: Variant; dim?: boolean; color?: string }) {
@@ -22,10 +24,11 @@ export function T({ v = 'body', dim, color, style, ...p }: TextProps & { v?: Var
   const s = SIZE[v];
   return (
     <Text
+      maxFontSizeMultiplier={1.4}
       {...p}
       style={[
-        { color: color ?? (dim ? th.textSecondary : th.text), fontSize: s.fontSize * settings.fontScale, lineHeight: s.lineHeight * settings.fontScale, fontWeight: s.fontWeight },
-        v === 'label' && { textTransform: 'uppercase', letterSpacing: 0.6 },
+        { color: color ?? (dim ? th.textSecondary : th.text), fontSize: s.fontSize * settings.fontScale, lineHeight: s.lineHeight * settings.fontScale, fontWeight: s.fontWeight, letterSpacing: s.letterSpacing },
+        v === 'label' && { textTransform: 'uppercase' },
         style,
       ]}
     />
@@ -79,6 +82,7 @@ export function Btn({ label, onPress, kind = 'primary', disabled, small }: { lab
         paddingHorizontal: small ? 12 : 16,
         alignItems: 'center',
         opacity: disabled ? 0.4 : pressed ? 0.75 : 1,
+        transform: [{ scale: pressed && !disabled ? 0.98 : 1 }],
         minHeight: small ? 40 : 48,
         justifyContent: 'center',
       })}
@@ -169,12 +173,36 @@ export function SavedInput({ value, onSave, ...p }: Omit<TextInputProps, 'value'
   );
 }
 
+/** Progress bar. The fill eases to its value (no overshoot) unless the system asks for reduced motion. */
 export function Bar({ value, tone }: { value: number; tone?: 'accent' | 'good' }) {
   const th = useTheme();
+  const reduced = useReducedMotion();
+  const target = Math.max(0, Math.min(1, value));
+  const anim = React.useRef(new Animated.Value(target)).current;
+  React.useEffect(() => {
+    if (reduced) anim.setValue(target);
+    else Animated.spring(anim, { toValue: target, bounciness: 0, speed: 14, useNativeDriver: false }).start();
+  }, [target, reduced, anim]);
+  const width = anim.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'], extrapolate: 'clamp' });
   return (
     <View style={{ height: 8, borderRadius: 4, backgroundColor: th.border, overflow: 'hidden' }}>
-      <View style={{ width: `${Math.max(0, Math.min(1, value)) * 100}%`, height: 8, backgroundColor: tone === 'good' ? th.good : th.accent }} />
+      <Animated.View style={{ width, height: 8, backgroundColor: tone === 'good' ? th.good : th.accent }} />
     </View>
+  );
+}
+
+/** Fades and lifts its content in (8 px). With reduced motion it simply appears. */
+export function Appear({ children }: { children: React.ReactNode }) {
+  const reduced = useReducedMotion();
+  const v = React.useRef(new Animated.Value(reduced ? 1 : 0)).current;
+  React.useEffect(() => {
+    if (reduced) v.setValue(1);
+    else Animated.timing(v, { toValue: 1, duration: 180, useNativeDriver: true }).start();
+  }, [reduced, v]);
+  return (
+    <Animated.View style={{ gap: 12, opacity: v, transform: [{ translateY: v.interpolate({ inputRange: [0, 1], outputRange: [8, 0] }) }] }}>
+      {children}
+    </Animated.View>
   );
 }
 

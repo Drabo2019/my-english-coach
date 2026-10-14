@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.5.4] - 2026-10-14
+- Design (audit lot 3): motion and feedback with restraint. Progress bars ease to their value and result cards fade in, both disabled when the system asks to reduce animations; light haptics when you grade a review card and on right/wrong answers in Sentences; buttons press in slightly. Text tracking follows size (tighter titles, slightly open small text) and system font scaling is capped at 140 %. Progress screen: one bar per skill, plural fixes and useful empty states.
+
 ## [0.5.3] - 2026-10-14
 - Design (audit lot 2): the interface is now in English. Today screen simplified (one primary action, a single plan card, a discreet update line instead of a big card, the repeated "Recommended" block removed); Search, "How do I say…?" and Settings are icons in the header of every tab; tabs use vector icons and "Today" replaces "Home"; onboarding has a step indicator and a full-width Continue; the level test shows a progress bar and its difficulty now rises steadily from A1 to C2; Settings is reordered (Learning, Audio and accessibility, Your data, App) with the AI partner and update source under "Advanced". 5-Minute English and My English moved to the Learn tab.
 - Design polish (audit lot 1): filter chips now respond instantly to touch; small buttons and chips have larger touch areas (48 px); release notes in the update card are shown as plain text instead of raw Markdown; error messages use the theme colour (dark mode, high contrast); the header buttons of the level test keep a margin from the screen edge; the "I don't know" answer is in English and as large as the others; skill names in Progress are capitalised; no more "0.0.0" version on web.

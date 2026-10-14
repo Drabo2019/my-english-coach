@@ -99,4 +99,4 @@ A3, A4, A5, B1, B2, B3, D5.
 
 - **Lot 1 : fait en 0.5.3** (A1, A2, C2, C3, E3, E5, D6, B4). Décision C1 : **interface en anglais** ; la traduction des textes français de l'interface se fait avec le lot 2.
 - **Lot 2 : fait en 0.5.3** (D1, D2, D3, D4, C1, C4, C5, E1, E2, E4). « 5-Minute English » et « My English » déplacés dans l'onglet Learn.
-- Lot 3 (mouvement, haptique, typographie, états vides de Progress) : à faire.
+- **Lot 3 : fait en 0.5.4** (A3, A4, A5, B1, B2, B3, D5). Reste volontairement non traité : F1 (matériaux translucides), C6 (jeu d'icônes des cartes Learn/Speak).

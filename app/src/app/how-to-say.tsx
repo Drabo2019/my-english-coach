@@ -41,7 +41,7 @@ export default function HowToSay() {
 
       {res === null && (
         <Card tone="warn">
-          <T>Je n’ai pas cette phrase dans la phrasebook hors-ligne.</T>
+          <T>This sentence is not in the offline phrasebook.</T>
           <T v="small" dim>Turn on the AI partner in Settings (a local model such as Ollama, or an OpenAI-compatible API) to translate any sentence.</T>
         </Card>
       )}
