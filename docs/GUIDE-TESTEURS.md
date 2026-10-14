@@ -95,7 +95,7 @@ Cochez au fur et à mesure. Pour chaque point, notez : **ça marche / ça ne mar
 
 ### Réglages
 - [ ] **Backup** : exporter la progression en fichier JSON puis la **restaurer** (idéalement après réinstallation).
-- [ ] **Settings → AI conversation partner** : optionnel, uniquement si vous avez Ollama sur un ordinateur (voir « Setup guide »).
+- [ ] **Settings → App → Advanced → AI conversation partner** : optionnel, uniquement si vous avez Ollama sur un ordinateur (voir « Setup guide and connection test »).
 
 ---
 
@@ -150,7 +150,7 @@ Version de l'app (Settings) :
 
 **Reconnaissance vocale.** L'application utilise celle d'Android. Selon le téléphone et le **pack anglais hors ligne** installé, l'audio peut être traité **sur le téléphone ou par les serveurs de Google**. L'application ne peut pas garantir le traitement local. Pour rester en local : Réglages Android → Google → Reconnaissance vocale hors ligne → installer l'anglais.
 
-**Supprimer ses données :** Settings → *Delete conversation history* ou *Delete ALL my data*. Désinstaller l'application efface tout.
+**Supprimer ses données :** Settings → Your data → *Delete conversation history* ou *Delete all my data*. Désinstaller l'application efface tout.
 
 ---
 
