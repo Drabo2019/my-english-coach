@@ -10,12 +10,12 @@ import { kvGet, kvSet } from '@/services/storage/db';
 import { logActivity } from '@/services/storage/repo';
 
 const STEPS = [
-  { t: 'Say one sentence', d: 'Une seule phrase, n’importe laquelle.', prompts: ['Say one sentence about your day.', 'Say one sentence about your job.'], target: 3 },
-  { t: 'Answer a simple question', d: 'Réponse courte à une question.', prompts: ['What is your name and where are you from?', 'What do you do for work?'], target: 6 },
-  { t: 'Speak for 30 seconds', d: 'Parle 30 secondes, même avec des erreurs.', prompts: ['Describe your morning routine.', 'Describe your workplace.'], target: 30 },
-  { t: 'Speak for 1 minute', d: 'Une minute sans t’arrêter.', prompts: ['Talk about your favourite place.', 'Talk about a typical weekend.'], target: 60 },
-  { t: 'Explain something', d: 'Explique comment ça marche.', prompts: ['Explain how you make a coffee.', 'Explain your job to a child.'], target: 45 },
-  { t: 'Tell a story', d: 'Utilise le passé : first, then, finally.', prompts: ['Tell a story about a trip.', 'Tell the story of a problem you solved.'], target: 60 },
+  { t: 'Say one sentence', d: 'Just one sentence, any sentence.', prompts: ['Say one sentence about your day.', 'Say one sentence about your job.'], target: 3 },
+  { t: 'Answer a simple question', d: 'A short answer to a question.', prompts: ['What is your name and where are you from?', 'What do you do for work?'], target: 6 },
+  { t: 'Speak for 30 seconds', d: 'Speak for 30 seconds, even with mistakes.', prompts: ['Describe your morning routine.', 'Describe your workplace.'], target: 30 },
+  { t: 'Speak for 1 minute', d: 'One minute without stopping.', prompts: ['Talk about your favourite place.', 'Talk about a typical weekend.'], target: 60 },
+  { t: 'Explain something', d: 'Explain how it works.', prompts: ['Explain how you make a coffee.', 'Explain your job to a child.'], target: 45 },
+  { t: 'Tell a story', d: 'Use the past: first, then, finally.', prompts: ['Tell a story about a trip.', 'Tell the story of a problem you solved.'], target: 60 },
   { t: 'Defend an opinion', d: 'I think… because…', prompts: ['Is remote work better than office work?', 'Should everyone learn English?'], target: 60 },
 ];
 
@@ -47,7 +47,7 @@ export default function Fearless() {
         <T dim>{s.d}</T>
         <Card>
           <T v="h2">{s.prompts[p % s.prompts.length]}</T>
-          <T v="small" dim>{`Goal: about ${s.target} seconds. Les erreurs ne comptent pas : communication first, perfection later.`}</T>
+          <T v="small" dim>{`Goal: about ${s.target} seconds. Mistakes don’t count: communication first, perfection later.`}</T>
         </Card>
         <Btn
           label={busy ? 'Listening…' : '🎙 Start speaking'}
@@ -98,7 +98,7 @@ export default function Fearless() {
   return (
     <Screen>
       <Stack.Screen options={{ title: 'Speak without fear' }} />
-      <T dim>Dix étapes progressives. Aucune n’est un échec : tu parles, c’est tout ce qu’on mesure.</T>
+      <T dim>Ten progressive steps. None of them can fail: you speak, and that is all we measure.</T>
       {STEPS.map((s, k) => (
         <Card key={k} onPress={() => { setStep(k); setP(0); }}>
           <Row style={{ justifyContent: 'space-between' }}>

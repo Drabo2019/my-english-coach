@@ -61,7 +61,7 @@ export default function Search() {
           <T>{`${m.original} → ${m.correction}`}</T>
         </Card>
       ))}
-      {!!t && !words.length && !sents.length && !phr.length && !gram.length && !mis.length && <T dim>Aucun résultat dans le contenu local.</T>}
+      {!!t && !words.length && !sents.length && !phr.length && !gram.length && !mis.length && <T dim>No results in the local content.</T>}
     </Screen>
   );
 }

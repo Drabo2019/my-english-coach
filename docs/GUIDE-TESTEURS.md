@@ -1,4 +1,4 @@
-# My English Coach — Guide du testeur (version 0.5.2)
+# My English Coach — Guide du testeur (version 0.5.3)
 
 Merci d'accepter de tester l'application. C'est une **version de test entre personnes de confiance** : elle n'est pas sur le Play Store, et vos retours servent à décider ce qu'on améliore. Vous êtes déjà à l'aise en anglais : c'est justement ce qui nous intéresse. La question centrale est **« est-ce que cette application m'aide encore à progresser à mon niveau (B2, C1, C2) ? »**
 
@@ -16,6 +16,7 @@ My English Coach est un entraîneur d'anglais pour francophones. Il suit une log
 - **Fonctionne hors ligne** (sauf la vérification des mises à jour et l'IA optionnelle).
 - **Priorité à l'oral** : conversation, « Find the words », shadowing, prononciation.
 - **Un plan du jour** calculé d'après vos erreurs et vos faiblesses réelles, pas un parcours figé.
+- **Interface en anglais** : le français n'est utilisé que pour les explications de grammaire et les traductions.
 
 ### Pour les niveaux avancés (nouveau dans la 0.5.0)
 
@@ -31,7 +32,7 @@ My English Coach est un entraîneur d'anglais pour francophones. Il suit une log
 
 1. **Touchez ce lien depuis votre téléphone** pour télécharger l'application (environ 70 Mo) :
    [**⬇ Télécharger My English Coach (APK)**](https://github.com/Drabo2019/my-english-coach/releases/latest/download/my-english-coach.apk)
-   Ce lien donne toujours la **dernière version** (actuellement la 0.5.2). Notes de version : [page des versions](https://github.com/Drabo2019/my-english-coach/releases/latest). Vous pouvez aussi recevoir le fichier par WhatsApp / Drive / clé USB.
+   Ce lien donne toujours la **dernière version** (actuellement la 0.5.3). Notes de version : [page des versions](https://github.com/Drabo2019/my-english-coach/releases/latest). Vous pouvez aussi recevoir le fichier par WhatsApp / Drive / clé USB.
 2. Touchez le fichier. Android demande d'**autoriser l'installation d'applications inconnues** pour l'application que vous utilisez (Chrome, Fichiers, WhatsApp…) : autorisez.
 3. **Google Play Protect** peut afficher « application non reconnue » : choisissez **Installer quand même**. C'est normal pour une version de test.
 4. Ouvrez **My English Coach**.
@@ -43,14 +44,14 @@ My English Coach est un entraîneur d'anglais pour francophones. Il suit une log
 
 ### Mises à jour
 
-Sur l'**écran d'accueil**, touchez **🔄 Check for updates**. Si une nouvelle version existe, une carte apparaît avec le bouton **⬇ Update now** : l'application la télécharge et ouvre l'installateur Android (il faut confirmer ; votre progression est conservée). L'application vérifie aussi automatiquement une fois par jour.
+En bas de l'écran **Today**, touchez **Check for updates**. Si une nouvelle version existe, une ligne « Version X is available » apparaît avec le bouton **Update** : l'application la télécharge et ouvre l'installateur Android (il faut confirmer ; votre progression est conservée). L'application vérifie aussi automatiquement une fois par jour.
 
 ---
 
 ## 3. Premier lancement : le test de niveau
 
 1. Répondez aux questions d'**objectifs** (pourquoi, combien de minutes par jour, domaine).
-2. Passez le **test de niveau** (environ 5 à 8 minutes) : questions à choix, écoute, et phrases à répéter à voix haute.
+2. Passez le **test de niveau** (environ 10 minutes, 31 questions, de A1 à C2) : questions à choix, écoute, et phrases à répéter à voix haute.
 3. Vous obtenez un **niveau par compétence** (vocabulaire, grammaire, lecture, écoute, prononciation, expression) et vos points faibles.
 
 **Conseils :**
@@ -66,9 +67,10 @@ Sur l'**écran d'accueil**, touchez **🔄 Check for updates**. Si une nouvelle 
 
 Cochez au fur et à mesure. Pour chaque point, notez : **ça marche / ça ne marche pas / ce n'est pas clair**.
 
-### Accueil
+### Today (accueil)
 - [ ] Le **plan du jour** est-il cohérent avec votre niveau et votre temps disponible ?
-- [ ] **⚡ 5-Minute English**, **🔍 Search**, **⭐ My English**, **⚙️ Settings** s'ouvrent correctement.
+- [ ] Les trois icônes en haut à droite (**recherche**, **How do I say…?**, **réglages**) s'ouvrent correctement.
+- [ ] **Learn → 5-Minute English** et **Learn → My English** (éléments sauvegardés) fonctionnent.
 
 ### Parler (l'onglet le plus important)
 - [ ] **🎙 Talk to me (free talk)** : parlez 2 à 3 minutes. L'application vous comprend-elle ? Les réponses sont-elles naturelles ?
@@ -89,7 +91,7 @@ Cochez au fur et à mesure. Pour chaque point, notez : **ça marche / ça ne mar
 - [ ] **Review** : les cartes arrivent-elles au bon rythme ? Trop de répétitions ?
 - [ ] **Progress** : le niveau affiché et les statistiques vous semblent-ils justes ?
 - [ ] **My English Mistakes** : vos erreurs récurrentes sont-elles bien repérées ?
-- [ ] **How do I say…?** (bouton en haut de l'écran) : donnez une phrase en français, vérifiez la traduction.
+- [ ] **How do I say…?** (icône en forme de bulle, en haut à droite) : donnez une phrase en français, vérifiez la traduction.
 
 ### Réglages
 - [ ] **Backup** : exporter la progression en fichier JSON puis la **restaurer** (idéalement après réinstallation).

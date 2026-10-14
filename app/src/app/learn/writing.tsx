@@ -58,9 +58,9 @@ export default function Writing() {
     const r = await ai.review({ scenario: null, history: [{ role: 'user', text }], profile, mode: settings.correctionMode });
     for (const f of r.findings) await recordMistake(f);
     const w: string[] = [];
-    if (p.tone === 'formal' && CONTRACTION.test(text)) w.push('Ton trop familier pour un texte formel (gonna, lol, thx…).');
-    if (p.tone === 'formal' && !/\b(regards|sincerely|thank you|thanks)\b/i.test(text)) w.push('Ajoute une formule de politesse (Kind regards / Thank you).');
-    if (text.trim().split(/\s+/).length < 8) w.push('Texte très court : ajoute un détail ou une raison.');
+    if (p.tone === 'formal' && CONTRACTION.test(text)) w.push('Too casual for a formal text (gonna, lol, thx…).');
+    if (p.tone === 'formal' && !/\b(regards|sincerely|thank you|thanks)\b/i.test(text)) w.push('Add a polite closing (Kind regards / Thank you).');
+    if (text.trim().split(/\s+/).length < 8) w.push('Very short text: add a detail or a reason.');
     setWarn(w);
     setRes(r);
     await logActivity('writing', (Date.now() - t0.current) / 1000, p.id);
@@ -72,7 +72,7 @@ export default function Writing() {
       <Stack.Screen options={{ title: p.t }} />
       <Card>
         <T v="h2">{p.p}</T>
-        <T v="small" dim>{`Ton attendu : ${p.tone}`}</T>
+        <T v="small" dim>{`Expected tone: ${p.tone}`}</T>
       </Card>
       <Input value={text} onChangeText={setText} placeholder="Write here…" multiline style={{ minHeight: 140, textAlignVertical: 'top' }} />
       <Btn label={busy ? 'Checking…' : 'Check my writing'} disabled={busy || !text.trim()} onPress={check} />
@@ -80,8 +80,8 @@ export default function Writing() {
         <>
           {res.findings.length === 0 && warn.length === 0 && (
             <Card tone="good">
-              <T>Rien de clairement faux détecté. Bien joué !</T>
-              <T v="small" dim>Le vérificateur hors-ligne est prudent. Active l’IA dans Settings pour juger le style et le naturel.</T>
+              <T>Nothing clearly wrong detected. Well done.</T>
+              <T v="small" dim>The offline checker is cautious. Turn on the AI partner in Settings to judge style and naturalness.</T>
             </Card>
           )}
           {res.findings.map((f, k) => (

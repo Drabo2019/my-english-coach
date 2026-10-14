@@ -48,7 +48,7 @@ export default function Weekly() {
       <Screen>
         <Stack.Screen options={{ title: 'Weekly check' }} />
         <T v="title">Weekly check</T>
-        <T dim>Estimation sur peu de questions : à lire comme une tendance, pas un verdict.</T>
+        <T dim>An estimate from a few questions: read it as a trend, not a verdict.</T>
         {Object.entries(done).map(([s, v]) => (
           <Card key={s}>
             <Row style={{ justifyContent: 'space-between' }}>

@@ -15,6 +15,8 @@ const ITEMS = [
   { route: '/learn/reading', icon: '📰', title: 'Reading', sub: `${READING.length} texts · tap a word to look it up` },
   { route: '/learn/writing', icon: '✍️', title: 'Writing', sub: 'SMS, email, opinion — corrected for naturalness' },
   { route: '/learn/modern', icon: '🗣️', title: 'Real-world English', sub: 'Textbook vs spoken: gonna, wanna, no worries…' },
+  { route: '/five', icon: '⚡', title: '5-Minute English', sub: 'Five one-minute activities when you are short on time' },
+  { route: '/saved', icon: '⭐', title: 'My English', sub: 'Your saved words, sentences and expressions' },
   { route: '/mistakes', icon: '⚠️', title: 'My English Mistakes', sub: 'Your recurring errors and how to fix them' },
   { route: '/resources', icon: '🌐', title: 'Learn More', sub: 'Trusted free resources matched to your level' },
 ] as const;

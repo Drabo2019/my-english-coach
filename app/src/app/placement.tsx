@@ -2,14 +2,14 @@ import { Stack, router } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { Alert } from 'react-native';
 
-import { Btn, Card, HeaderBtn, Row, Screen, T, Tag } from '@/components/ui';
+import { Bar, Btn, Card, HeaderBtn, Row, Screen, T, Tag } from '@/components/ui';
 import { useApp } from '@/features/app-context';
 import { useInnerBack } from '@/hooks/use-inner-back';
 import { useTheme } from '@/hooks/use-theme';
 import { applyPlacement, levelLabel, overallIndex, PLACEMENT, PLACEMENT_SPEAK, weaknesses, type Answers } from '@/features/placement';
 import { addScore } from '@/services/storage/repo';
 import { pronunciation, stt, tts } from '@/services/speech';
-import { SKILLS, type Profile } from '@/types';
+import { LEVELS, SKILLS, type Profile } from '@/types';
 
 type Phase = 'mcq' | 'speak' | 'confidence' | 'result';
 
@@ -31,10 +31,10 @@ export default function Placement() {
       router.replace('/(tabs)');
       return;
     }
-    Alert.alert('Quitter le test ?', 'Tu pourras le refaire plus tard (Progress → Weekly check). Le niveau par défaut sera utilisé.', [
-      { text: 'Continuer le test', style: 'cancel' },
+    Alert.alert('Quit the test?', 'You can retake it later in Settings. The default level (A2) will be used.', [
+      { text: 'Continue the test', style: 'cancel' },
       {
-        text: 'Quitter',
+        text: 'Quit',
         style: 'destructive',
         onPress: async () => {
           await updateProfile({ onboarded: true });
@@ -45,7 +45,8 @@ export default function Placement() {
   }, [phase, updateProfile]);
   useInnerBack(true, quit);
 
-  const items = [...PLACEMENT].sort((a, b) => a.skill.localeCompare(b.skill));
+  // Difficulty rises steadily (A1 to C2) with the skills interleaved, instead of restarting at A1 for each skill.
+  const items = [...PLACEMENT].sort((a, b) => LEVELS.indexOf(a.level) - LEVELS.indexOf(b.level) || a.skill.localeCompare(b.skill));
   const total = items.length + PLACEMENT_SPEAK.length;
 
   const finish = async (confidence: Profile['confidence']) => {
@@ -60,8 +61,9 @@ export default function Placement() {
     const it = items[i];
     return (
       <Screen>
-        <Stack.Screen options={{ headerRight: () => <HeaderBtn label="Quitter" onPress={quit} /> }} />
-        <T v="label" dim>{`Question ${i + 1} / ${total}  ·  ${it.skill}`}</T>
+        <Stack.Screen options={{ headerRight: () => <HeaderBtn label="Quit" onPress={quit} /> }} />
+        <T v="label" dim>{`Question ${i + 1} of ${total}  ·  ${it.skill}`}</T>
+        <Bar value={(i + 1) / total} />
         {it.audio && <Btn kind="ghost" label="🔊 Play audio" onPress={() => tts.speak(it.audio!, { rate: 0.9 })} />}
         <T v="h2">{it.prompt}</T>
         {it.options.map((o, idx) => (
@@ -100,8 +102,9 @@ export default function Placement() {
     };
     return (
       <Screen>
-        <Stack.Screen options={{ headerRight: () => <HeaderBtn label="Quitter" onPress={quit} /> }} />
-        <T v="label" dim>{`Say it aloud ${si + 1} / ${PLACEMENT_SPEAK.length}`}</T>
+        <Stack.Screen options={{ headerRight: () => <HeaderBtn label="Quit" onPress={quit} /> }} />
+        <T v="label" dim>{`Say it aloud ${si + 1} of ${PLACEMENT_SPEAK.length}`}</T>
+        <Bar value={(items.length + si + 1) / total} />
         <Card>
           <T v="h2">{sp.target}</T>
         </Card>
@@ -126,7 +129,7 @@ export default function Placement() {
         />
         {heard !== '' && <T dim>{`Heard: ${heard}`}</T>}
         {err !== '' && <T color={th.bad}>{err}</T>}
-        <Btn small kind="ghost" label="Passer cette étape" onPress={() => next(null)} />
+        <Btn small kind="ghost" label="Skip this step" onPress={() => next(null)} />
       </Screen>
     );
   }
@@ -134,11 +137,11 @@ export default function Placement() {
   if (phase === 'confidence') {
     return (
       <Screen>
-        <Stack.Screen options={{ headerRight: () => <HeaderBtn label="Quitter" onPress={quit} /> }} />
-        <T v="h2">Quand tu parles anglais, tu te sens…</T>
-        <Btn kind="ghost" label="Plutôt bloqué / peur de faire des erreurs" onPress={() => finish('low')} />
-        <Btn kind="ghost" label="Moyen : ça dépend des situations" onPress={() => finish('medium')} />
-        <Btn kind="ghost" label="À l’aise" onPress={() => finish('high')} />
+        <Stack.Screen options={{ headerRight: () => <HeaderBtn label="Quit" onPress={quit} /> }} />
+        <T v="h2">When you speak English, you feel…</T>
+        <Btn kind="ghost" label="Often stuck, afraid of making mistakes" onPress={() => finish('low')} />
+        <Btn kind="ghost" label="In between: it depends on the situation" onPress={() => finish('medium')} />
+        <Btn kind="ghost" label="Comfortable" onPress={() => finish('high')} />
       </Screen>
     );
   }
@@ -147,9 +150,9 @@ export default function Placement() {
   const weak = weaknesses(r.levels);
   return (
     <Screen>
-      <Stack.Screen options={{ headerRight: () => <HeaderBtn label="Fermer" onPress={quit} /> }} />
+      <Stack.Screen options={{ headerRight: () => <HeaderBtn label="Close" onPress={quit} /> }} />
       <T v="title">Your starting profile</T>
-      <T dim>Estimation pour régler ton programme — pas une certification officielle. Elle sera affinée à chaque semaine.</T>
+      <T dim>An estimate to tune your plan, not an official certification. It is refined every week.</T>
       <Card tone="accent">
         <T v="h2">{`Overall: ${levelLabel(overallIndex(r.levels))}`}</T>
         {SKILLS.map((s) => (
@@ -162,7 +165,7 @@ export default function Placement() {
       <Card>
         <T v="h2">Priority</T>
         <T>{weak.length ? weak.slice(0, 3).join(' + ') : 'Balanced: keep every skill moving'}</T>
-        <T dim>Speaking et spontanéité sont toujours favorisés dans ton plan quotidien.</T>
+        <T dim>Speaking and spontaneity are always favoured in your daily plan.</T>
       </Card>
       <Btn label="Go to my plan" onPress={() => router.replace('/(tabs)')} />
     </Screen>

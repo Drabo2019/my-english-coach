@@ -36,7 +36,7 @@ export default function Pronunciation() {
   return (
     <Screen>
       <Stack.Screen options={{ title: 'Pronunciation' }} />
-      <T dim>Écoute chaque mot (normal puis lent), repère la différence, puis répète la phrase. La reconnaissance vérifie que chaque mot est compris comme voulu — ce n’est pas un score de phonèmes.</T>
+      <T dim>Listen to each word (normal, then slow), spot the difference, then repeat the sentence. Recognition checks that each word is understood as intended; it is not a phoneme score.</T>
       {PRONUNCIATION.map((p) => (
         <Card key={p.id} onPress={() => setOpen(open === p.id ? null : p.id)}>
           <Row style={{ justifyContent: 'space-between' }}>

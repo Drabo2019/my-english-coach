@@ -90,7 +90,7 @@ export default function Reading() {
               <T dim>{entry.examples[0]?.en}</T>
             </>
           ) : (
-            <T dim>Pas encore dans le dictionnaire intégré (il grandit avec le contenu). Écoute-le :</T>
+            <T dim>Not in the built-in dictionary yet (it grows with the content). Listen to it:</T>
           )}
           <Row>
             <Speak text={word} />

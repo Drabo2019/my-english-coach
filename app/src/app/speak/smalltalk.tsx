@@ -20,7 +20,7 @@ export default function SmallTalk() {
   return (
     <Screen>
       <Stack.Screen options={{ title: 'Small talk' }} />
-      <T dim>Apprends ces échanges comme des blocs. Puis lance « Talk to me » et improvise.</T>
+      <T dim>Learn these exchanges as blocks. Then start “Talk to me” and improvise.</T>
       {TOPICS.map((tp) => (
         <Card key={tp.t} onPress={() => setOpen(open === tp.t ? null : tp.t)}>
           <Row style={{ justifyContent: 'space-between' }}>

@@ -46,7 +46,7 @@ export default function Resources() {
           </Card>
         );
       })}
-      <T v="small" dim>Ressources externes : leur contenu appartient à leurs éditeurs ; l’app ne les copie pas.</T>
+      <T v="small" dim>External resources: their content belongs to their publishers; the app does not copy it.</T>
     </Screen>
   );
 }

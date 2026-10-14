@@ -104,9 +104,9 @@ export function ConversationView({ scenarioId }: { scenarioId: string | null }) 
       const r = await stt.listen({ onPartial: setInput });
       setInput('');
       if (r.transcript) await send(r.transcript);
-      else setErr('Je n’ai rien entendu. Réessaie ou écris ta réponse.');
+      else setErr('I didn’t hear anything. Try again or type your answer.');
     } catch (e) {
-      setErr(`${e instanceof Error ? e.message : e}. Tu peux écrire ta réponse à la place.`);
+      setErr(`${e instanceof Error ? e.message : e}. You can type your answer instead.`);
     } finally {
       setListening(false);
     }
@@ -148,7 +148,7 @@ export function ConversationView({ scenarioId }: { scenarioId: string | null }) 
         {review.findings.length === 0 && (
           <Card tone="good">
             <T>No clear mistake detected. Good work — you communicated. 👍</T>
-            <T v="small" dim>Le détecteur hors-ligne est prudent : active l’IA (Settings) pour une analyse plus fine.</T>
+            <T v="small" dim>The offline checker is cautious: turn on the AI partner (Settings) for a finer analysis.</T>
           </Card>
         )}
         {review.findings.map((f, k) => (
@@ -172,7 +172,7 @@ export function ConversationView({ scenarioId }: { scenarioId: string | null }) 
         {review.vocabTips.map((v, k) => (
           <T key={k} dim>{`• ${v}`}</T>
         ))}
-        <T v="small" dim>Les erreurs sont ajoutées à « My English Mistakes » : elles servent à construire tes prochains exercices. Communication first, perfection later.</T>
+        <T v="small" dim>Mistakes are added to “My English Mistakes” and used to build your next exercises. Communication first, perfection later.</T>
         <Btn label="Done" onPress={() => router.back()} />
       </ScrollView>
     );

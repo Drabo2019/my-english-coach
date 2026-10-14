@@ -25,7 +25,7 @@ export default function Feedback() {
   return (
     <Screen>
       <Stack.Screen options={{ title: 'Feedback' }} />
-      <T dim>Tes retours alimentent la roadmap (phase « real user test »). Un tap suffit.</T>
+      <T dim>Your feedback decides what gets improved next. One tap is enough.</T>
       <Row>
         {KINDS.map((k) => (
           <Chip key={k} label={k} active={kind === k} onPress={() => setKind(k)} />

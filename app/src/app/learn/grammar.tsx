@@ -8,7 +8,7 @@ export default function GrammarList() {
   return (
     <Screen>
       <Stack.Screen options={{ title: 'Grammar' }} />
-      <T dim>Seulement la grammaire utilisée en vrai : règle simple, erreurs fréquentes, exercices, phrases à dire.</T>
+      <T dim>Only the grammar people really use: a simple rule, frequent mistakes, exercises and sentences to say.</T>
       {GRAMMAR.map((g) => (
         <Card key={g.id} onPress={() => router.push({ pathname: '/learn/grammar/[id]', params: { id: g.id } })}>
           <Row style={{ justifyContent: 'space-between' }}>

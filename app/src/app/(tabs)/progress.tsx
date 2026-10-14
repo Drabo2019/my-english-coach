@@ -52,7 +52,7 @@ export default function Progress() {
         <T>{`${d?.learned ?? 0} words learned · ${d?.active ?? 0} active · ${d?.mastered ?? 0} mastered`}</T>
         <T>{`${d?.toReview ?? 0} to review · ${d?.sentMastered ?? 0} sentences mastered`}</T>
         <Bar value={d && d.learned ? d.active / d.learned : 0} tone="good" />
-        <T v="small" dim>Active = tu l’as produit (écrit ou dit), pas seulement reconnu.</T>
+        <T v="small" dim>Active means you produced it (written or spoken), not only recognised it.</T>
       </Card>
 
       <Card onPress={() => router.push('/mistakes')}>

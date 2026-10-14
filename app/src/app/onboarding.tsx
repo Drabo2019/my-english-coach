@@ -1,14 +1,18 @@
 import { router } from 'expo-router';
 import React, { useCallback, useState } from 'react';
+import { Pressable, View } from 'react-native';
 
 import { Btn, Card, Chip, Input, Row, Screen, T } from '@/components/ui';
 import { useApp } from '@/features/app-context';
 import { useInnerBack } from '@/hooks/use-inner-back';
+import { useTheme } from '@/hooks/use-theme';
 
-const GOALS = ['Conversation', 'Work', 'Travel', 'Living abroad', 'Studies', 'Exams', 'Technology', 'Understanding films', 'Confidence', 'General level'];
+const GOALS = ['Work', 'Conversation', 'Travel', 'Living abroad', 'Studies', 'Exams', 'Technology', 'Films and series', 'Confidence', 'General level'];
 const TIMES = [5, 10, 15, 20, 30, 45, 60];
+const STEPS = 3;
 
 export default function Onboarding() {
+  const th = useTheme();
   const { updateProfile } = useApp();
   const [step, setStep] = useState(0);
   const [goals, setGoals] = useState<string[]>(['Work', 'Confidence']);
@@ -21,68 +25,79 @@ export default function Onboarding() {
 
   const toggle = (g: string) => setGoals((x) => (x.includes(g) ? x.filter((y) => y !== g) : [...x, g]));
   const save = () => updateProfile({ goals, minutesPerDay: minutes, domain, variant });
+  const skip = async () => {
+    await updateProfile({ goals, minutesPerDay: minutes, domain, variant, onboarded: true });
+    router.replace('/(tabs)');
+  };
 
   return (
     <Screen>
-      <T v="title" style={{ marginTop: 40 }}>
-        My English Coach
-      </T>
+      <Row style={{ justifyContent: 'space-between', marginTop: 36 }}>
+        <T v="label" dim>{`Step ${step + 1} of ${STEPS}`}</T>
+        <Row style={{ gap: 4 }}>
+          {Array.from({ length: STEPS }, (_, k) => (
+            <View key={k} style={{ width: 22, height: 4, borderRadius: 2, backgroundColor: k <= step ? th.accent : th.border }} />
+          ))}
+        </Row>
+      </Row>
+
       {step === 0 && (
         <>
-          <T>Un coach personnel : il repère ce que tu sais, ce que tu oublies et où tu bloques, puis te fait parler. Pas de promesse de « fluent en 30 jours », seulement des progrès mesurés.</T>
-          <T v="h2">Pourquoi apprends-tu l’anglais ?</T>
+          <T v="title">What do you need English for?</T>
+          <T dim>My English Coach finds what you know, what you forget and where you get stuck, then gets you speaking. Pick as many as you like; you can change this later.</T>
           <Row>
             {GOALS.map((g) => (
               <Chip key={g} label={g} active={goals.includes(g)} onPress={() => toggle(g)} />
             ))}
           </Row>
-          <Btn label="Continuer" onPress={() => setStep(1)} />
+          <Btn label="Continue" onPress={() => setStep(1)} />
         </>
       )}
+
       {step === 1 && (
         <>
-          <T v="h2">Temps disponible par jour</T>
+          <T v="title">Set up your practice</T>
+          <T v="h2">Time per day</T>
           <Row>
             {TIMES.map((m) => (
               <Chip key={m} label={m === 60 ? '60+ min' : `${m} min`} active={minutes === m} onPress={() => setMinutes(m)} />
             ))}
           </Row>
-          <T v="h2">Ton domaine professionnel</T>
-          <Input value={domain} onChangeText={setDomain} placeholder="ex. engineering / electronics" />
-          <T v="h2">Variante d’anglais</T>
+          <T v="h2">Your field of work</T>
+          <Input value={domain} onChangeText={setDomain} placeholder="e.g. engineering / electronics" />
+          <T v="h2">English variant</T>
           <Row>
-            <Chip label="International (recommandé)" active={variant === 'intl'} onPress={() => setVariant('intl')} />
+            <Chip label="International (recommended)" active={variant === 'intl'} onPress={() => setVariant('intl')} />
             <Chip label="American" active={variant === 'us'} onPress={() => setVariant('us')} />
             <Chip label="British" active={variant === 'uk'} onPress={() => setVariant('uk')} />
           </Row>
-          <Row>
-            <Btn kind="ghost" label="← Retour" onPress={back} />
-            <Btn label="Continuer" onPress={() => setStep(2)} />
-          </Row>
+          <Btn label="Continue" onPress={() => setStep(2)} />
+          <Pressable accessibilityRole="button" hitSlop={8} onPress={back} style={{ alignSelf: 'center', padding: 8 }}>
+            <T color={th.accent} style={{ fontWeight: '600' }}>Back</T>
+          </Pressable>
         </>
       )}
+
       {step === 2 && (
         <>
+          <T v="title">Check your level</T>
           <Card>
-            <T v="h2">Test de niveau (≈ 8 min)</T>
-            <T dim>Vocabulaire, grammaire, lecture, écoute, puis quelques phrases à répéter à voix haute. Ce n’est pas une certification officielle : une estimation pour régler ton programme. Tu peux te tromper : c’est le but.</T>
+            <T v="h2">About 10 minutes</T>
+            <T dim>Vocabulary, grammar, reading and listening from A1 to C2, then a few sentences to say aloud. It is an estimate to tune your plan, not a certification. Skip a question if you don’t know: guessing hides your real level.</T>
           </Card>
           <Btn
-            label="Commencer le test"
+            label="Start the test"
             onPress={async () => {
               await save();
               router.replace('/placement');
             }}
           />
-          <Btn kind="ghost" label="← Retour" onPress={back} />
-          <Btn
-            kind="ghost"
-            label="Passer (niveau A2 par défaut)"
-            onPress={async () => {
-              await updateProfile({ goals, minutesPerDay: minutes, domain, variant, onboarded: true });
-              router.replace('/(tabs)');
-            }}
-          />
+          <Pressable accessibilityRole="button" hitSlop={8} onPress={skip} style={{ alignSelf: 'center', padding: 8 }}>
+            <T color={th.accent} style={{ fontWeight: '600' }}>Skip for now (A2 by default)</T>
+          </Pressable>
+          <Pressable accessibilityRole="button" hitSlop={8} onPress={back} style={{ alignSelf: 'center', padding: 8 }}>
+            <T dim style={{ fontWeight: '600' }}>Back</T>
+          </Pressable>
         </>
       )}
     </Screen>

@@ -12,7 +12,7 @@ export default function Saved() {
   return (
     <Screen>
       <Stack.Screen options={{ title: 'My English' }} />
-      {list && list.length === 0 && <T dim>Rien de sauvegardé. Utilise ☆ sur un mot, une phrase ou une expression.</T>}
+      {list && list.length === 0 && <T dim>Nothing saved yet. Use ☆ on a word, a sentence or an expression.</T>}
       {list?.map((s) => {
         const v = s.kind === 'vocab' ? vocabById(s.ref) : null;
         const sent = s.kind === 'sentence' ? SENTENCES.find((x) => x.id === s.ref) : null;

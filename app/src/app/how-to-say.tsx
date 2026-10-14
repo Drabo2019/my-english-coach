@@ -35,14 +35,14 @@ export default function HowToSay() {
   return (
     <Screen>
       <Stack.Screen options={{ title: 'How do I say…?', presentation: 'modal', headerRight: () => <Btn small kind="ghost" label="Close" onPress={() => router.back()} /> }} />
-      <T dim>Écris ou dicte en français. Tu obtiens l’anglais naturel, à dire tout de suite.</T>
+      <T dim>Type or dictate in French. You get natural English to say right away.</T>
       <Input value={fr} onChangeText={setFr} placeholder="Comment dire : « Je vais vérifier et je te tiens au courant. »" multiline autoFocus />
       <Btn label={busy ? 'Searching…' : 'Say it in English'} disabled={busy || !fr.trim()} onPress={go} />
 
       {res === null && (
         <Card tone="warn">
           <T>Je n’ai pas cette phrase dans la phrasebook hors-ligne.</T>
-          <T v="small" dim>Active l’IA dans Settings (modèle local type Ollama ou API compatible OpenAI) pour traduire n’importe quelle phrase.</T>
+          <T v="small" dim>Turn on the AI partner in Settings (a local model such as Ollama, or an OpenAI-compatible API) to translate any sentence.</T>
         </Card>
       )}
 

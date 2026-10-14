@@ -35,7 +35,7 @@ export default function Listening() {
     return (
       <Screen>
         <Stack.Screen options={{ title: 'Listening' }} />
-        <T dim>Écoute d’abord sans lire. Commence lentement, puis normal, puis rapide. La transcription n’apparaît qu’à la fin.</T>
+        <T dim>Listen first without reading. Start slowly, then normal speed, then fast. The transcript only appears at the end.</T>
         {LISTENING.map((l) => (
           <Card
             key={l.id}

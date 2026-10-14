@@ -17,8 +17,8 @@ export default function Mistakes() {
   return (
     <Screen>
       <Stack.Screen options={{ title: 'My English Mistakes' }} />
-      <T dim>Tes erreurs récurrentes (détectées en conversation et en écriture). Elles pilotent ton plan : 30 secondes par erreur, régulièrement, valent mieux qu’un cours entier.</T>
-      {list && list.length === 0 && <Card><T>Aucune erreur enregistrée pour l’instant. Fais une conversation ou un texte, puis reviens ici.</T></Card>}
+      <T dim>Your recurring mistakes (found in conversation and writing). They drive your plan: 30 seconds per mistake, regularly, beat a whole lesson.</T>
+      {list && list.length === 0 && <Card><T>No mistakes recorded yet. Have a conversation or write a text, then come back here.</T></Card>}
       {list?.map((m) => (
         <Card key={m.id}>
           <Row style={{ justifyContent: 'space-between' }}>

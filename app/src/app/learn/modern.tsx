@@ -23,7 +23,7 @@ export default function Modern() {
   return (
     <Screen>
       <Stack.Screen options={{ title: 'Real-world English' }} />
-      <T dim>Textbook English est correct ; real-world English est ce qu’on entend vraiment. Ne l’apprends jamais « parce qu’il est populaire » : regarde le contexte.</T>
+      <T dim>Textbook English is correct; real-world English is what you actually hear. Never learn an expression just because it is popular: look at the context.</T>
       {ROWS.map((r) => (
         <Card key={r.book}>
           <Tag label={r.tag} tone={r.tag === 'professional' ? 'good' : 'warn'} />
@@ -36,7 +36,7 @@ export default function Modern() {
       <Card>
         <T v="label" dim>US / UK / International</T>
         <T>lift (UK) / elevator (US) · flat (UK) / apartment (US) · holiday (UK) / vacation (US) · mobile (UK) / cell (US) · bill (UK) / check (US)</T>
-        <T v="small" dim>Par défaut l’app privilégie un anglais international naturel (réglable dans le profil).</T>
+        <T v="small" dim>By default the app favours natural international English (you can change this in Settings).</T>
       </Card>
     </Screen>
   );

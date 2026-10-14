@@ -26,35 +26,35 @@ export default function AiSetup() {
     <Screen>
       <Stack.Screen options={{ title: 'AI partner setup' }} />
       <T dim>
-        Le partenaire de conversation fonctionne hors-ligne (scripté). Pour une vraie conversation libre et des corrections fines, branche-le sur un modèle qui tourne sur ton PC
-        (gratuit, tes textes restent chez toi).
+        The conversation partner works offline (scripted). For real free conversation and finer corrections, connect it to a model running on your PC
+        (free, and your texts stay at home).
       </T>
 
       <Card>
-        <T v="h2">1 · Installer Ollama sur le PC</T>
-        <T>Télécharge Ollama (ollama.com), installe-le, puis dans un terminal :</T>
+        <T v="h2">1 · Install Ollama on your PC</T>
+        <T>Download Ollama (ollama.com), install it, then run this in a terminal:</T>
         <T style={{ fontFamily: 'monospace' }}>ollama pull llama3.2</T>
-        <T v="small" dim>Modèle léger (≈ 2 Go), correct en anglais. Pour de meilleures corrections si ton PC a 16 Go de RAM : qwen2.5:7b.</T>
+        <T v="small" dim>A light model (about 2 GB), good enough in English. For better corrections if your PC has 16 GB of RAM: qwen2.5:7b.</T>
       </Card>
 
       <Card>
-        <T v="h2">2 · Autoriser le téléphone à se connecter</T>
-        <T>Par défaut Ollama n’écoute que sur le PC. Définis la variable d’environnement puis redémarre Ollama :</T>
+        <T v="h2">2 · Let the phone connect</T>
+        <T>By default Ollama only listens on the PC itself. Set this environment variable, then restart Ollama:</T>
         <T style={{ fontFamily: 'monospace' }}>OLLAMA_HOST=0.0.0.0</T>
-        <T v="small" dim>Windows : Paramètres → Variables d’environnement. Autorise aussi le port 11434 dans le pare-feu (réseau privé).</T>
+        <T v="small" dim>Windows: Settings → Environment variables. Also allow port 11434 in the firewall (private network).</T>
       </Card>
 
       <Card>
-        <T v="h2">3 · Adresse du PC</T>
-        <T>Le téléphone et le PC doivent être sur le même Wi-Fi. Trouve l’adresse IP du PC (commande ipconfig) puis saisis :</T>
+        <T v="h2">3 · Your PC’s address</T>
+        <T>The phone and the PC must be on the same Wi-Fi. Find the PC’s IP address (ipconfig command), then enter:</T>
         <SavedInput value={settings.llmBaseUrl} onSave={(v) => updateSettings({ llmBaseUrl: v.trim() })} autoCapitalize="none" placeholder="http://192.168.1.20:11434/v1" />
-        <T v="small" dim>Format : http://IP-DU-PC:11434/v1</T>
-        <T v="small">Modèle</T>
+        <T v="small" dim>Format: http://PC-IP:11434/v1</T>
+        <T v="small">Model</T>
         <SavedInput value={settings.llmModel} onSave={(v) => updateSettings({ llmModel: v.trim() })} autoCapitalize="none" placeholder="llama3.2" />
       </Card>
 
       <Card>
-        <T v="h2">4 · Tester</T>
+        <T v="h2">4 · Test</T>
         <Btn label={busy ? 'Testing…' : 'Test connection'} disabled={busy} onPress={test} />
         {result?.ok && (
           <>
@@ -64,14 +64,14 @@ export default function AiSetup() {
                 <Chip key={m} label={m} active={m === settings.llmModel} onPress={() => updateSettings({ llmModel: m })} />
               ))}
             </Row>
-            {!modelOk && <T color={th.warn}>{`Le modèle « ${settings.llmModel} » n’est pas dans la liste : touche un modèle ci-dessus.`}</T>}
+            {!modelOk && <T color={th.warn}>{`The model “${settings.llmModel}” is not in the list: tap one of the models above.`}</T>}
           </>
         )}
         {result && !result.ok && (
           <>
             <T color={th.bad}>{`❌ ${result.error}`}</T>
             <T v="small" dim>
-              Vérifie : Ollama lancé ; OLLAMA_HOST=0.0.0.0 ; même Wi-Fi ; pare-feu ; IP correcte (pas « localhost » : ce serait le téléphone lui-même).
+              Check: Ollama is running; OLLAMA_HOST=0.0.0.0; same Wi-Fi; firewall; correct IP (not “localhost”: that would be the phone itself).
             </T>
           </>
         )}
@@ -79,10 +79,10 @@ export default function AiSetup() {
 
       <Card>
         <Row style={{ justifyContent: 'space-between' }}>
-          <T style={{ flex: 1 }}>Utiliser ce partenaire IA dans les conversations</T>
+          <T style={{ flex: 1 }}>Use this AI partner in conversations</T>
           <Switch value={settings.llmEnabled} onValueChange={(v) => updateSettings({ llmEnabled: v })} />
         </Row>
-        <T v="small" dim>Si le PC est éteint ou injoignable, l’app retombe automatiquement sur le mode hors-ligne.</T>
+        <T v="small" dim>If the PC is off or unreachable, the app falls back to offline mode automatically.</T>
       </Card>
     </Screen>
   );

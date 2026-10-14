@@ -1,12 +1,12 @@
 import { Stack, router } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, Linking, Switch } from 'react-native';
+import { Alert, Linking, Pressable, Switch } from 'react-native';
 
 import { Btn, Card, Chip, Row, SavedInput, Screen, T } from '@/components/ui';
 import { useApp } from '@/features/app-context';
 import { scheduleSmartReminder } from '@/services/notifications';
 import { wipeAll, wipeConversations } from '@/services/storage/db';
-import { checkForUpdate, currentVersion, downloadAndInstall, type UpdateInfo } from '@/services/updates';
+import { checkForUpdate, currentVersion, downloadAndInstall, hasNativeVersion, type UpdateInfo } from '@/services/updates';
 import { useTheme } from '@/hooks/use-theme';
 import { plainNotes } from '@/services/updates/version';
 import { exportBackup, lastBackupAt, pickBackup, restoreBackup } from '@/services/backup';
@@ -20,6 +20,7 @@ export default function Settings() {
   const [progress, setProgress] = useState<number | null>(null);
   const [backupMsg, setBackupMsg] = useState('');
   const [lastBackup, setLastBackup] = useState<string | null>(null);
+  const [advanced, setAdvanced] = useState(false);
 
   React.useEffect(() => {
     lastBackupAt().then(setLastBackup);
@@ -83,55 +84,6 @@ export default function Settings() {
       <Stack.Screen options={{ title: 'Settings' }} />
 
       <Card>
-        <T v="h2">{`Version ${currentVersion()}`}</T>
-        <T v="small" dim>GitHub repository hosting the APK releases (owner/repo):</T>
-        <SavedInput value={settings.updateRepo} onSave={(v) => updateSettings({ updateRepo: v })} placeholder="owner/my-english-coach" autoCapitalize="none" />
-        <Row style={{ justifyContent: 'space-between' }}>
-          <T style={{ flex: 1 }}>Check automatically once a day</T>
-          <Switch value={settings.autoCheckUpdates} onValueChange={(v) => updateSettings({ autoCheckUpdates: v })} />
-        </Row>
-        <Btn kind="ghost" label="Check for updates" onPress={check} />
-        {!!msg && <T>{msg}</T>}
-        {upd?.available && (
-          <>
-            <T v="small">{`${upd.current} → ${upd.latest}`}</T>
-            {!!upd.notes && <T v="small" dim>{plainNotes(upd.notes, 600)}</T>}
-            {upd.apkUrl ? (
-              <Btn
-                label={progress !== null ? `Downloading ${Math.round(progress * 100)}%` : 'Download & install'}
-                disabled={progress !== null}
-                onPress={async () => {
-                  try {
-                    setProgress(0);
-                    await downloadAndInstall(upd.apkUrl!, setProgress);
-                  } catch (e) {
-                    setMsg(String(e instanceof Error ? e.message : e));
-                  }
-                  setProgress(null);
-                }}
-              />
-            ) : (
-              <Btn kind="ghost" label="Open release page" onPress={() => Linking.openURL(upd.pageUrl)} />
-            )}
-            <T v="small" dim>Android te demandera de confirmer l’installation (et d’autoriser « sources inconnues » pour cette app la 1re fois).</T>
-          </>
-        )}
-      </Card>
-
-      <Card>
-        <T v="h2">AI conversation partner</T>
-        <Row style={{ justifyContent: 'space-between' }}>
-          <T style={{ flex: 1 }}>Use an LLM (otherwise: offline scripted mode)</T>
-          <Switch value={settings.llmEnabled} onValueChange={(v) => updateSettings({ llmEnabled: v })} />
-        </Row>
-        <Btn small kind="ghost" label="Setup guide + test connection" onPress={() => router.push('/ai-setup')} />
-        <T v="small" dim>Endpoint compatible OpenAI : Ollama (http://IP-du-PC:11434/v1), LM Studio, llama.cpp server, ou une API cloud. Ton texte (pas l’audio) est envoyé à cette adresse.</T>
-        <SavedInput value={settings.llmBaseUrl} onSave={(v) => updateSettings({ llmBaseUrl: v })} placeholder="Base URL" autoCapitalize="none" />
-        <SavedInput value={settings.llmModel} onSave={(v) => updateSettings({ llmModel: v })} placeholder="Model name" autoCapitalize="none" />
-        <SavedInput value={settings.llmApiKey} onSave={(v) => updateSettings({ llmApiKey: v })} placeholder="API key (optional)" autoCapitalize="none" secureTextEntry />
-      </Card>
-
-      <Card>
         <T v="h2">Learning</T>
         <T v="small" dim>Minutes per day</T>
         <Row>
@@ -151,21 +103,21 @@ export default function Settings() {
             <Chip key={v} label={v === 'intl' ? 'International' : v.toUpperCase()} active={profile.variant === v} onPress={() => updateProfile({ variant: v })} />
           ))}
         </Row>
-        <T v="small" dim>Professional domain</T>
+        <T v="small" dim>Field of work</T>
         <SavedInput value={profile.domain} onSave={(v) => updateProfile({ domain: v })} />
-        <Btn small kind="ghost" label="Retake the level test (A1 → C2)" onPress={() => router.push('/placement')} />
+        <Btn small kind="ghost" label="Retake the level test (A1 to C2)" onPress={() => router.push('/placement')} />
       </Card>
 
       <Card>
-        <T v="h2">Accessibility & audio</T>
+        <T v="h2">Audio and accessibility</T>
         <T v="small" dim>Text size</T>
         <Row>
           {[0.9, 1, 1.15, 1.3].map((f) => (
             <Chip key={f} label={`${Math.round(f * 100)}%`} active={settings.fontScale === f} onPress={() => updateSettings({ fontScale: f })} />
           ))}
         </Row>
-        <Row style={{ justifyContent: 'space-between' }}>
-          <T>High contrast</T>
+        <Row style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
+          <T style={{ flex: 1 }}>High contrast</T>
           <Switch value={settings.highContrast} onValueChange={(v) => updateSettings({ highContrast: v })} />
         </Row>
         <T v="small" dim>Voice speed</T>
@@ -174,8 +126,8 @@ export default function Settings() {
             <Chip key={r} label={`${r}×`} active={settings.ttsRate === r} onPress={() => updateSettings({ ttsRate: r })} />
           ))}
         </Row>
-        <Row style={{ justifyContent: 'space-between' }}>
-          <T style={{ flex: 1 }}>Smart reminders (evening, based on your data)</T>
+        <Row style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
+          <T style={{ flex: 1 }}>Evening reminder based on your progress</T>
           <Switch
             value={settings.notifications}
             onValueChange={async (v) => {
@@ -187,21 +139,16 @@ export default function Settings() {
       </Card>
 
       <Card>
-        <T v="h2">Backup</T>
-        <T v="small" dim>Tout est stocké sur ce téléphone. Exporte un fichier JSON (progression, mots, erreurs, favoris, historique) pour changer de téléphone ou te protéger d’une désinstallation. Ta clé d’API n’est jamais incluse.</T>
+        <T v="h2">Your data</T>
+        <T v="small" dim>Everything is stored on this phone. Export a JSON file (progress, words, mistakes, favourites, history) to change phone or to protect yourself from an uninstall. Your API key is never included.</T>
         <T v="small">{`Last backup: ${lastBackup ? lastBackup.slice(0, 10) : 'never'}`}</T>
-        <Btn kind="ghost" label="Export backup (JSON)" onPress={doExport} />
+        <Btn kind="ghost" label="Export a backup (JSON)" onPress={doExport} />
         <Btn kind="ghost" label="Restore from a backup file" onPress={doImport} />
         {!!backupMsg && <T v="small">{backupMsg}</T>}
-      </Card>
-
-      <Card>
-        <T v="h2">Privacy</T>
-        <T v="small" dim>Tout est stocké localement sur ce téléphone (SQLite). Aucun compte. L’audio n’est jamais enregistré ni envoyé par l’app : la reconnaissance vocale est celle d’Android (selon ton téléphone, elle peut passer par le service de Google ; installe le pack vocal anglais hors-ligne pour rester local). Seul le texte est envoyé à ton LLM, si tu l’actives.</T>
         <Btn kind="ghost" label="Delete conversation history" onPress={async () => { await wipeConversations(); Alert.alert('Done', 'Conversation history deleted.'); }} />
         <Btn
           kind="danger"
-          label="Delete ALL my data"
+          label="Delete all my data"
           onPress={() =>
             Alert.alert('Delete everything?', 'Progress, mistakes, vocabulary memory and settings will be erased.', [
               { text: 'Cancel', style: 'cancel' },
@@ -210,7 +157,71 @@ export default function Settings() {
           }
         />
       </Card>
-      <T v="small" color={th.textSecondary}>Level estimates are self-assessment tools, not official certification.</T>
+
+      <Card>
+        <T v="h2">{hasNativeVersion() ? `App · version ${currentVersion()}` : 'App'}</T>
+        <Row style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
+          <T style={{ flex: 1 }}>Check for updates once a day</T>
+          <Switch value={settings.autoCheckUpdates} onValueChange={(v) => updateSettings({ autoCheckUpdates: v })} />
+        </Row>
+        <Btn kind="ghost" label="Check for updates" onPress={check} />
+        {!!msg && <T>{msg}</T>}
+        {upd?.available && (
+          <>
+            <T v="small">{`${upd.current} → ${upd.latest}`}</T>
+            {!!upd.notes && <T v="small" dim>{plainNotes(upd.notes, 600)}</T>}
+            {upd.apkUrl ? (
+              <Btn
+                label={progress !== null ? `Downloading ${Math.round(progress * 100)}%` : 'Download and install'}
+                disabled={progress !== null}
+                onPress={async () => {
+                  try {
+                    setProgress(0);
+                    await downloadAndInstall(upd.apkUrl!, setProgress);
+                  } catch (e) {
+                    setMsg(String(e instanceof Error ? e.message : e));
+                  }
+                  setProgress(null);
+                }}
+              />
+            ) : (
+              <Btn kind="ghost" label="Open release page" onPress={() => Linking.openURL(upd.pageUrl)} />
+            )}
+            <T v="small" dim>Android will ask you to confirm the installation, and to allow “install unknown apps” for this app the first time.</T>
+          </>
+        )}
+        <Pressable
+          accessibilityRole="button"
+          accessibilityState={{ expanded: advanced }}
+          onPress={() => setAdvanced((v) => !v)}
+          style={({ pressed }) => ({ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', minHeight: 44, opacity: pressed ? 0.7 : 1 })}>
+          <T style={{ fontWeight: '600' }}>Advanced</T>
+          <T dim v="small">{advanced ? 'AI partner, update source ▴' : 'AI partner, update source ▾'}</T>
+        </Pressable>
+        {advanced && (
+          <>
+            <T v="h2">AI conversation partner</T>
+            <Row style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
+              <T style={{ flex: 1 }}>Use a language model (otherwise: offline scripted partner)</T>
+              <Switch value={settings.llmEnabled} onValueChange={(v) => updateSettings({ llmEnabled: v })} />
+            </Row>
+            <Btn small kind="ghost" label="Setup guide and connection test" onPress={() => router.push('/ai-setup')} />
+            <T v="small" dim>Any OpenAI-compatible endpoint: Ollama (http://PC-IP:11434/v1), LM Studio, a llama.cpp server or a cloud API. Your text (not your audio) is sent to this address.</T>
+            <SavedInput value={settings.llmBaseUrl} onSave={(v) => updateSettings({ llmBaseUrl: v })} placeholder="Base URL" autoCapitalize="none" />
+            <SavedInput value={settings.llmModel} onSave={(v) => updateSettings({ llmModel: v })} placeholder="Model name" autoCapitalize="none" />
+            <SavedInput value={settings.llmApiKey} onSave={(v) => updateSettings({ llmApiKey: v })} placeholder="API key (optional)" autoCapitalize="none" secureTextEntry />
+            <T v="h2">Update source</T>
+            <T v="small" dim>GitHub repository that hosts the APK releases (owner/repo):</T>
+            <SavedInput value={settings.updateRepo} onSave={(v) => updateSettings({ updateRepo: v })} placeholder="owner/my-english-coach" autoCapitalize="none" />
+          </>
+        )}
+      </Card>
+
+      <Card>
+        <T v="h2">Privacy</T>
+        <T v="small" dim>Everything is stored locally on this phone (SQLite). No account. Audio is never recorded or sent by the app: speech recognition is Android’s own, and depending on your phone it may go through Google’s service (install the offline English voice pack to stay local). Only text is sent to your language model, if you turn it on.</T>
+      </Card>
+      <T v="small" color={th.textSecondary}>Level estimates are self-assessment tools, not an official certification.</T>
     </Screen>
   );
 }

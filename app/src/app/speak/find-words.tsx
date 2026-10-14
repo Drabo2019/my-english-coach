@@ -49,7 +49,7 @@ export default function FindWords() {
       <Card>
         <T v="label" dim>{`Situation · ${task.level}`}</T>
         <T v="h2">{task.situation}</T>
-        <T dim>Réponds à voix haute (ou écris). Si tu bloques, demande un indice — un à la fois.</T>
+        <T dim>Answer aloud (or type). If you get stuck, ask for a hint, one at a time.</T>
       </Card>
 
       {!revealed && (

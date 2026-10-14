@@ -9,7 +9,7 @@ import { plainNotes } from '@/services/updates/version';
 
 import { useApp } from './app-context';
 
-/** Home button: check for a new version and install it in one place. Android still asks you to confirm. */
+/** Today screen: a quiet version line, and a single row when a newer version exists. Android still asks you to confirm. */
 export function UpdateCard() {
   const { settings } = useApp();
   const [cached] = useLoad(cachedUpdate);
@@ -25,7 +25,7 @@ export function UpdateCard() {
     try {
       const u = await refreshUpdate(settings.updateRepo);
       setFresh(u);
-      setMsg(u.available ? '' : `You are up to date (v${currentVersion()}).`);
+      setMsg(u.available ? '' : 'You are up to date.');
     } catch (e) {
       setMsg(`${e instanceof Error ? e.message : e}`);
     }
@@ -45,29 +45,29 @@ export function UpdateCard() {
   };
 
   if (!hasNativeVersion()) return null;
+
   if (upd?.available) {
+    const firstNote = plainNotes(upd.notes, 160).split('\n')[0];
     return (
       <Card tone="accent">
-        <T style={{ fontWeight: '600' }}>{`New version available: ${upd.latest} (you have ${upd.current})`}</T>
-        {!!upd.notes && <T v="small" dim>{plainNotes(upd.notes)}</T>}
-        {upd.apkUrl ? (
-          <Btn
-            label={progress !== null ? `Downloading ${Math.round(progress * 100)}%` : '⬇ Update now'}
-            disabled={progress !== null}
-            onPress={install}
-          />
-        ) : (
-          <Btn label="Open release page" onPress={() => Linking.openURL(upd.pageUrl)} />
-        )}
-        <T v="small" dim>Android will ask you to confirm the installation. Your progress is kept.</T>
+        <Row style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
+          <T style={{ flex: 1, fontWeight: '600' }}>{`Version ${upd.latest} is available`}</T>
+          {upd.apkUrl ? (
+            <Btn small label={progress !== null ? `${Math.round(progress * 100)}%` : 'Update'} disabled={progress !== null} onPress={install} />
+          ) : (
+            <Btn small label="Open page" onPress={() => Linking.openURL(upd.pageUrl)} />
+          )}
+        </Row>
+        {!!firstNote && <T v="small" dim numberOfLines={2}>{firstNote}</T>}
         {!!msg && <T v="small">{msg}</T>}
       </Card>
     );
   }
+
   return (
-    <Row style={{ justifyContent: 'space-between' }}>
-      <Btn small kind="ghost" label={busy ? 'Checking…' : '🔄 Check for updates'} disabled={busy} onPress={check} />
-      {!!msg && <T v="small" dim style={{ flex: 1 }}>{msg}</T>}
+    <Row style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
+      <T v="small" dim style={{ flex: 1 }}>{msg || `Version ${currentVersion()}`}</T>
+      <Btn small kind="ghost" label={busy ? 'Checking…' : 'Check for updates'} disabled={busy} onPress={check} />
     </Row>
   );
 }

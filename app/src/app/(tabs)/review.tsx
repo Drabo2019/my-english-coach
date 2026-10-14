@@ -72,10 +72,9 @@ export default function Review() {
   if (!queue) {
     return (
       <Screen>
-        <T v="title">Review</T>
         <Card>
           <T>{`${stats?.due ?? 0} due · ${stats?.total ?? 0} in memory · ${stats?.difficult ?? 0} difficult`}</T>
-          <T dim>Les cartes reviennent selon ta difficulté, ta vitesse de réponse et si tu as réellement produit le mot (écrit ou dit).</T>
+          <T dim>Cards come back according to how hard they are for you, how fast you answer, and whether you really produced the word (written or spoken).</T>
         </Card>
         <Btn label="Start review (2–10 min)" onPress={() => start(false)} />
         {!!stats?.difficult && <Btn kind="ghost" label={`Words I keep forgetting (${stats.difficult})`} onPress={() => start(true)} />}

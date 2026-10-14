@@ -58,7 +58,7 @@ export default function Shadowing() {
   return (
     <Screen>
       <Stack.Screen options={{ title: 'Shadowing' }} />
-      <T dim>Écoute la phrase, puis répète-la immédiatement, avec le même rythme et la même mélodie. Commence lentement, puis accélère.</T>
+      <T dim>Listen to the sentence, then repeat it right away with the same rhythm and melody. Start slowly, then speed up.</T>
       <Row>
         {LEVELS.map((l) => (
           <Chip key={l} label={l} active={l === level} onPress={choose(() => setLevel(l))} />

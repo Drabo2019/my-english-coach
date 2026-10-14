@@ -1,26 +1,51 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Tabs, router } from 'expo-router';
 import React from 'react';
-import { Pressable, Text } from 'react-native';
+import { Pressable, View, type ColorValue } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme } from '@/hooks/use-theme';
 
-function TabIcon({ emoji, focused }: { emoji: string; focused: boolean }) {
-  return <Text style={{ fontSize: 20, opacity: focused ? 1 : 0.55 }}>{emoji}</Text>;
-}
+type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
-/** "How do I say…?" is reachable from every tab (header button). */
-const HowToSayButton = () => {
+const TAB_ICON: Record<string, [IconName, IconName]> = {
+  index: ['sunny-outline', 'sunny'],
+  learn: ['book-outline', 'book'],
+  speak: ['mic-outline', 'mic'],
+  review: ['repeat-outline', 'repeat'],
+  progress: ['stats-chart-outline', 'stats-chart'],
+};
+
+const tabIcon = (name: string) =>
+  function TabBarIcon({ color, focused, size }: { color: ColorValue; focused: boolean; size: number }) {
+    return <Ionicons name={TAB_ICON[name][focused ? 1 : 0]} size={size} color={color} />;
+  };
+
+/** Search, "How do I say…?" and Settings are reachable from every tab. */
+const HEADER_ACTIONS: { icon: IconName; label: string; route: string }[] = [
+  { icon: 'search-outline', label: 'Search', route: '/search' },
+  { icon: 'chatbubble-ellipses-outline', label: 'How do I say…?', route: '/how-to-say' },
+  { icon: 'settings-outline', label: 'Settings', route: '/settings' },
+];
+
+function HeaderActions() {
   const th = useTheme();
   return (
-    <Pressable
-      accessibilityLabel="How do I say…"
-      onPress={() => router.push('/how-to-say')}
-      style={{ marginRight: 12, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 999, backgroundColor: th.accentSoft }}>
-      <Text style={{ color: th.accent, fontWeight: '600' }}>💬 How do I say…?</Text>
-    </Pressable>
+    <View style={{ flexDirection: 'row', marginRight: 6 }}>
+      {HEADER_ACTIONS.map((a) => (
+        <Pressable
+          key={a.route}
+          accessibilityRole="button"
+          accessibilityLabel={a.label}
+          hitSlop={4}
+          onPress={() => router.push(a.route as never)}
+          style={({ pressed }) => ({ width: 44, height: 44, alignItems: 'center', justifyContent: 'center', opacity: pressed ? 0.6 : 1 })}>
+          <Ionicons name={a.icon} size={22} color={th.textSecondary} />
+        </Pressable>
+      ))}
+    </View>
   );
-};
+}
 
 export default function TabsLayout() {
   const th = useTheme();
@@ -29,19 +54,21 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerStyle: { backgroundColor: th.background },
-        headerTitleStyle: { color: th.text },
+        headerTitleStyle: { color: th.text, fontSize: 22, fontWeight: '700', letterSpacing: -0.3 },
+        headerTitleAlign: 'left',
         headerShadowVisible: false,
-        headerRight: () => <HowToSayButton />,
-        tabBarStyle: { backgroundColor: th.card, borderTopColor: th.border, height: 58 + insets.bottom, paddingBottom: insets.bottom + 4, paddingTop: 4 },
+        headerRight: () => <HeaderActions />,
+        tabBarStyle: { backgroundColor: th.card, borderTopColor: th.border, height: 62 + insets.bottom, paddingBottom: insets.bottom + 6, paddingTop: 6 },
         tabBarActiveTintColor: th.accent,
         tabBarInactiveTintColor: th.textSecondary,
+        tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
         sceneStyle: { backgroundColor: th.background },
       }}>
-      <Tabs.Screen name="index" options={{ title: 'Home', tabBarIcon: ({ focused }) => <TabIcon emoji="🏠" focused={focused} /> }} />
-      <Tabs.Screen name="learn" options={{ title: 'Learn', tabBarIcon: ({ focused }) => <TabIcon emoji="📚" focused={focused} /> }} />
-      <Tabs.Screen name="speak" options={{ title: 'Speak', tabBarIcon: ({ focused }) => <TabIcon emoji="🎙️" focused={focused} /> }} />
-      <Tabs.Screen name="review" options={{ title: 'Review', tabBarIcon: ({ focused }) => <TabIcon emoji="🔁" focused={focused} /> }} />
-      <Tabs.Screen name="progress" options={{ title: 'Progress', tabBarIcon: ({ focused }) => <TabIcon emoji="📈" focused={focused} /> }} />
+      <Tabs.Screen name="index" options={{ title: 'Today', tabBarIcon: tabIcon('index') }} />
+      <Tabs.Screen name="learn" options={{ title: 'Learn', tabBarIcon: tabIcon('learn') }} />
+      <Tabs.Screen name="speak" options={{ title: 'Speak', tabBarIcon: tabIcon('speak') }} />
+      <Tabs.Screen name="review" options={{ title: 'Review', tabBarIcon: tabIcon('review') }} />
+      <Tabs.Screen name="progress" options={{ title: 'Progress', tabBarIcon: tabIcon('progress') }} />
     </Tabs>
   );
 }

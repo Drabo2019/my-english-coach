@@ -1,17 +1,20 @@
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React from 'react';
+import { Pressable, View } from 'react-native';
 
 import { Bar, Btn, Card, Row, Screen, T, Tag } from '@/components/ui';
 import { useApp } from '@/features/app-context';
 import { UpdateCard } from '@/features/UpdateCard';
-import { levelLabel, overallIndex, weaknesses } from '@/features/placement';
+import { levelLabel, overallIndex } from '@/features/placement';
 import { buildPlan } from '@/features/plan';
 import { isDifficult } from '@/features/srs';
 import { useLoad } from '@/hooks/use-load';
+import { useTheme } from '@/hooks/use-theme';
 import { allCards, dueCards, minutesToday, secondsBySkill, streakDays, topMistakes } from '@/services/storage/repo';
-import { currentVersion, hasNativeVersion } from '@/services/updates';
 
-export default function Home() {
+export default function Today() {
+  const th = useTheme();
   const { profile } = useApp();
   const [d] = useLoad(async () => {
     const [due, cards, mins, mistakes, streak, week] = await Promise.all([
@@ -26,62 +29,66 @@ export default function Home() {
     : [];
   const goal = profile.minutesPerDay;
   const speakMin = d ? Math.round(((d.week['speaking'] ?? 0) + (d.week['conversation'] ?? 0)) / 60) : 0;
-  const weak = weaknesses(profile.levels);
+  const planMinutes = plan.reduce((a, b) => a + b.minutes, 0);
 
   return (
     <Screen>
-      <Row style={{ justifyContent: 'space-between' }}>
-        <T v="title">Today’s English</T>
-        <Tag label={`Level ${overall}`} tone="accent" />
-      </Row>
-
       <Card>
         <Row style={{ justifyContent: 'space-between' }}>
-          <T>{`${d?.mins ?? 0} / ${goal} min today`}</T>
-          {!!d?.streak && <T dim>{`🔥 ${d.streak} day${d.streak > 1 ? 's' : ''}`}</T>}
+          <T style={{ fontWeight: '600' }}>{`${d?.mins ?? 0} of ${goal} min today`}</T>
+          <Row style={{ gap: 10 }}>
+            {!!d?.streak && <T v="small" dim>{`${d.streak}-day streak`}</T>}
+            <Tag label={`Level ${overall}`} tone="accent" />
+          </Row>
         </Row>
         <Bar value={(d?.mins ?? 0) / goal} tone="good" />
       </Card>
 
-      <UpdateCard />
+      <Btn label="Talk to me" onPress={() => router.push('/speak/free')} />
 
-      <Btn label="🎙 Talk to me" onPress={() => router.push('/speak/free')} />
-
-      <Card>
-        <T v="h2">{`${plan.reduce((a, b) => a + b.minutes, 0)} minutes`}</T>
-        {plan.length === 0 && <T dim>Today’s goal is done. Anything more is a bonus.</T>}
-        {plan.map((b) => (
-          <Card key={b.key} onPress={() => router.push(b.route as never)} style={{ padding: 10 }}>
-            <Row style={{ justifyContent: 'space-between' }}>
-              <T style={{ fontWeight: '600' }}>{`${b.minutes} min — ${b.title}`}</T>
-              <T dim>›</T>
-            </Row>
-            {!!b.why && <T v="small" dim>{b.why}</T>}
-          </Card>
-        ))}
-      </Card>
-
-      <Card>
-        <T v="h2">Recommended for you</T>
-        {!!d?.due && <T>{`1. Review ${d.due} due item${d.due > 1 ? 's' : ''}`}</T>}
-        {!!d?.top && <T>{`2. Practise: “${d.top.original}” → “${d.top.correction}”`}</T>}
-        <T>{`${(d?.due ? 1 : 0) + (d?.top ? 1 : 0) + 1}. Have a 5–7 minute conversation`}</T>
-        {weak[0] && <T>{`${(d?.due ? 1 : 0) + (d?.top ? 1 : 0) + 2}. Work on ${weak[0]}`}</T>}
-      </Card>
+      {plan.length === 0 ? (
+        <Card>
+          <T>{d ? 'Today’s goal is done. Anything more is a bonus.' : 'Preparing your plan…'}</T>
+        </Card>
+      ) : (
+        <>
+          <T v="label" dim style={{ marginTop: 4 }}>{`Today’s plan · ${planMinutes} min`}</T>
+          <View style={{ backgroundColor: th.card, borderColor: th.border, borderWidth: 1, borderRadius: 14, overflow: 'hidden' }}>
+            {plan.map((b, i) => (
+              <Pressable
+                key={b.key}
+                accessibilityRole="button"
+                onPress={() => router.push(b.route as never)}
+                style={({ pressed }) => ({
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 8,
+                  minHeight: 56,
+                  paddingVertical: 10,
+                  paddingHorizontal: 14,
+                  borderTopWidth: i ? 1 : 0,
+                  borderTopColor: th.border,
+                  backgroundColor: pressed ? th.border : 'transparent',
+                })}>
+                <View style={{ flex: 1 }}>
+                  <T style={{ fontWeight: '600' }}>{b.title}</T>
+                  {!!b.why && <T v="small" dim>{b.why[0].toUpperCase() + b.why.slice(1)}</T>}
+                </View>
+                <T v="small" dim>{`${b.minutes} min`}</T>
+                <Ionicons name="chevron-forward" size={16} color={th.textSecondary} />
+              </Pressable>
+            ))}
+          </View>
+        </>
+      )}
 
       {speakMin > 0 && (
         <Card tone="good">
-          <T>{`You are improving… You spoke ${speakMin} minute${speakMin > 1 ? 's' : ''} this week.`}</T>
+          <T>{`You spoke ${speakMin} minute${speakMin > 1 ? 's' : ''} this week. Keep going.`}</T>
         </Card>
       )}
 
-      <Row>
-        <Btn small kind="ghost" label="⚡ 5-Minute English" onPress={() => router.push('/five')} />
-        <Btn small kind="ghost" label="🔍 Search" onPress={() => router.push('/search')} />
-        <Btn small kind="ghost" label="⭐ My English" onPress={() => router.push('/saved')} />
-        <Btn small kind="ghost" label="⚙️ Settings" onPress={() => router.push('/settings')} />
-      </Row>
-      {hasNativeVersion() && <T v="small" dim>{`Version ${currentVersion()}`}</T>}
+      <UpdateCard />
     </Screen>
   );
 }
