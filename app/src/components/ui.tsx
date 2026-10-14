@@ -79,9 +79,10 @@ export function Btn({ label, onPress, kind = 'primary', disabled, small }: { lab
         paddingHorizontal: small ? 12 : 16,
         alignItems: 'center',
         opacity: disabled ? 0.4 : pressed ? 0.75 : 1,
-        minHeight: small ? 36 : 48,
+        minHeight: small ? 40 : 48,
         justifyContent: 'center',
-      })}>
+      })}
+      hitSlop={small ? 4 : undefined}>
       <T v={small ? 'small' : 'body'} color={fg} style={{ fontWeight: '600' }}>
         {label}
       </T>
@@ -95,18 +96,31 @@ export function Chip({ label, active, onPress }: { label: string; active?: boole
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      style={{
-        paddingVertical: 7,
+      accessibilityState={{ selected: !!active }}
+      hitSlop={6}
+      style={({ pressed }) => ({
+        paddingVertical: 8,
         paddingHorizontal: 12,
         borderRadius: 999,
         backgroundColor: active ? th.accent : th.card,
         borderColor: active ? th.accent : th.border,
         borderWidth: 1,
-      }}>
+        opacity: pressed ? 0.7 : 1,
+        transform: [{ scale: pressed ? 0.97 : 1 }],
+      })}>
       <T v="small" color={active ? th.accentText : th.text}>
         {label}
       </T>
     </Pressable>
+  );
+}
+
+/** Header action: keeps a margin from the screen edge (a bare button touched the right edge). */
+export function HeaderBtn({ label, onPress }: { label: string; onPress: () => void }) {
+  return (
+    <View style={{ marginRight: 12 }}>
+      <Btn small kind="ghost" label={label} onPress={onPress} />
+    </View>
   );
 }
 

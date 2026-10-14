@@ -15,6 +15,8 @@ export interface UpdateInfo {
 }
 
 export const currentVersion = () => Application.nativeApplicationVersion ?? '0.0.0';
+/** False on web, where there is no installed app version (and no APK to update). */
+export const hasNativeVersion = () => !!Application.nativeApplicationVersion;
 
 /** repo = "owner/name" of the GitHub repository hosting the Releases. */
 export async function checkForUpdate(repo: string): Promise<UpdateInfo> {

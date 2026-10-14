@@ -3,6 +3,7 @@ import React, { useCallback, useRef, useState } from 'react';
 
 import { Btn, Card, Row, Screen, T, Tag } from '@/components/ui';
 import { useInnerBack } from '@/hooks/use-inner-back';
+import { useTheme } from '@/hooks/use-theme';
 import { useLoad } from '@/hooks/use-load';
 import { stt } from '@/services/speech';
 import { kvGet, kvSet } from '@/services/storage/db';
@@ -25,6 +26,7 @@ const CONVO = [
 ];
 
 export default function Fearless() {
+  const th = useTheme();
   const [done, reload] = useLoad(() => kvGet<number>('fearless', 0));
   const [step, setStep] = useState<number | null>(null);
   const [p, setP] = useState(0);
@@ -73,7 +75,7 @@ export default function Fearless() {
             <T v="small" dim>{`${text.split(/\s+/).filter(Boolean).length} words${secs ? ` in ${Math.round(secs)} s` : ''}. You did it.`}</T>
           </Card>
         )}
-        {err !== '' && <T color="#C2312B">{err}</T>}
+        {err !== '' && <T color={th.bad}>{err}</T>}
         <Row>
           <Btn small kind="ghost" label="← Back" onPress={leave} />
           <Btn small kind="ghost" label="Another prompt" onPress={() => { setP(p + 1); setText(''); setSecs(null); }} />

@@ -5,10 +5,12 @@ import { Btn, Card, Input, Row, Screen, Speak, T } from '@/components/ui';
 import { FIND_WORDS } from '@/data/scenarios';
 import { analyze } from '@/features/corrector';
 import { similarity } from '@/features/items';
+import { useTheme } from '@/hooks/use-theme';
 import { stt, tts } from '@/services/speech';
 import { logActivity, recordMistake } from '@/services/storage/repo';
 
 export default function FindWords() {
+  const th = useTheme();
   const [i, setI] = useState(0);
   const [hints, setHints] = useState(0);
   const [answer, setAnswer] = useState('');
@@ -69,7 +71,7 @@ export default function FindWords() {
             }}
           />
           <Input value={answer} onChangeText={onText} placeholder="…or type your answer" multiline />
-          {err !== '' && <T v="small" color="#C2312B">{err}</T>}
+          {err !== '' && <T v="small" color={th.bad}>{err}</T>}
           {hints > 0 && (
             <Card tone="warn">
               {task.hints.slice(0, hints).map((h, k) => (

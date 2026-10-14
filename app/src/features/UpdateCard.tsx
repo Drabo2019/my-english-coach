@@ -3,8 +3,9 @@ import { Linking } from 'react-native';
 
 import { Btn, Card, Row, T } from '@/components/ui';
 import { useLoad } from '@/hooks/use-load';
-import { currentVersion, downloadAndInstall, type UpdateInfo } from '@/services/updates';
+import { currentVersion, downloadAndInstall, hasNativeVersion, type UpdateInfo } from '@/services/updates';
 import { cachedUpdate, refreshUpdate } from '@/services/updates/auto';
+import { plainNotes } from '@/services/updates/version';
 
 import { useApp } from './app-context';
 
@@ -43,11 +44,12 @@ export function UpdateCard() {
     setProgress(null);
   };
 
+  if (!hasNativeVersion()) return null;
   if (upd?.available) {
     return (
       <Card tone="accent">
         <T style={{ fontWeight: '600' }}>{`New version available: ${upd.latest} (you have ${upd.current})`}</T>
-        {!!upd.notes && <T v="small" dim>{upd.notes.split('\n').slice(0, 4).join('\n').slice(0, 300)}</T>}
+        {!!upd.notes && <T v="small" dim>{plainNotes(upd.notes)}</T>}
         {upd.apkUrl ? (
           <Btn
             label={progress !== null ? `Downloading ${Math.round(progress * 100)}%` : '⬇ Update now'}

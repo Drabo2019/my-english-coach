@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { parseSse } from '@/services/ai/sse';
 import { BACKUP_TABLES, buildBackup, summarize, validateBackup } from '@/services/backup-format';
-import { shouldCheck, UPDATE_CHECK_INTERVAL_MS } from '@/services/updates/version';
+import { plainNotes, shouldCheck, UPDATE_CHECK_INTERVAL_MS } from '@/services/updates/version';
 
 describe('backup format', () => {
   const rows = {
@@ -69,5 +69,13 @@ describe('automatic update check schedule', () => {
     expect(shouldCheck(now - UPDATE_CHECK_INTERVAL_MS, now)).toBe(true);
     expect(shouldCheck(now - 1000, now)).toBe(false);
     expect(shouldCheck(now + 5000, now)).toBe(true);
+  });
+});
+
+describe('release notes', () => {
+  it('turns Markdown into plain lines', () => {
+    const md = '## 0.5.2 - 2026-10-13\n- Home: a **visible** "Check for updates" button; see [docs](https://x.y/z).\n- `Update now` card\n\n';
+    expect(plainNotes(md).split('\n')).toEqual(['0.5.2 - 2026-10-13', 'Home: a visible "Check for updates" button; see docs.', 'Update now card']);
+    expect(plainNotes('x'.repeat(50), 10)).toBe(`${'x'.repeat(10)}…`);
   });
 });

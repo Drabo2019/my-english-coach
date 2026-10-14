@@ -2,9 +2,10 @@ import { Stack, router } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { Alert } from 'react-native';
 
-import { Btn, Card, Row, Screen, T, Tag } from '@/components/ui';
+import { Btn, Card, HeaderBtn, Row, Screen, T, Tag } from '@/components/ui';
 import { useApp } from '@/features/app-context';
 import { useInnerBack } from '@/hooks/use-inner-back';
+import { useTheme } from '@/hooks/use-theme';
 import { applyPlacement, levelLabel, overallIndex, PLACEMENT, PLACEMENT_SPEAK, weaknesses, type Answers } from '@/features/placement';
 import { addScore } from '@/services/storage/repo';
 import { pronunciation, stt, tts } from '@/services/speech';
@@ -13,6 +14,7 @@ import { SKILLS, type Profile } from '@/types';
 type Phase = 'mcq' | 'speak' | 'confidence' | 'result';
 
 export default function Placement() {
+  const th = useTheme();
   const { profile, updateProfile } = useApp();
   const [phase, setPhase] = useState<Phase>('mcq');
   const [i, setI] = useState(0);
@@ -58,7 +60,7 @@ export default function Placement() {
     const it = items[i];
     return (
       <Screen>
-        <Stack.Screen options={{ headerRight: () => <Btn small kind="ghost" label="Quitter" onPress={quit} /> }} />
+        <Stack.Screen options={{ headerRight: () => <HeaderBtn label="Quitter" onPress={quit} /> }} />
         <T v="label" dim>{`Question ${i + 1} / ${total}  ·  ${it.skill}`}</T>
         {it.audio && <Btn kind="ghost" label="🔊 Play audio" onPress={() => tts.speak(it.audio!, { rate: 0.9 })} />}
         <T v="h2">{it.prompt}</T>
@@ -75,9 +77,8 @@ export default function Placement() {
           />
         ))}
         <Btn
-          small
           kind="ghost"
-          label="Je ne sais pas"
+          label="I don’t know"
           onPress={() => {
             setAnswers((a) => ({ ...a, [it.id]: false }));
             if (i + 1 < items.length) setI(i + 1);
@@ -99,7 +100,7 @@ export default function Placement() {
     };
     return (
       <Screen>
-        <Stack.Screen options={{ headerRight: () => <Btn small kind="ghost" label="Quitter" onPress={quit} /> }} />
+        <Stack.Screen options={{ headerRight: () => <HeaderBtn label="Quitter" onPress={quit} /> }} />
         <T v="label" dim>{`Say it aloud ${si + 1} / ${PLACEMENT_SPEAK.length}`}</T>
         <Card>
           <T v="h2">{sp.target}</T>
@@ -124,7 +125,7 @@ export default function Placement() {
           }}
         />
         {heard !== '' && <T dim>{`Heard: ${heard}`}</T>}
-        {err !== '' && <T color="#C2312B">{err}</T>}
+        {err !== '' && <T color={th.bad}>{err}</T>}
         <Btn small kind="ghost" label="Passer cette étape" onPress={() => next(null)} />
       </Screen>
     );
@@ -133,7 +134,7 @@ export default function Placement() {
   if (phase === 'confidence') {
     return (
       <Screen>
-        <Stack.Screen options={{ headerRight: () => <Btn small kind="ghost" label="Quitter" onPress={quit} /> }} />
+        <Stack.Screen options={{ headerRight: () => <HeaderBtn label="Quitter" onPress={quit} /> }} />
         <T v="h2">Quand tu parles anglais, tu te sens…</T>
         <Btn kind="ghost" label="Plutôt bloqué / peur de faire des erreurs" onPress={() => finish('low')} />
         <Btn kind="ghost" label="Moyen : ça dépend des situations" onPress={() => finish('medium')} />
@@ -146,7 +147,7 @@ export default function Placement() {
   const weak = weaknesses(r.levels);
   return (
     <Screen>
-      <Stack.Screen options={{ headerRight: () => <Btn small kind="ghost" label="Fermer" onPress={quit} /> }} />
+      <Stack.Screen options={{ headerRight: () => <HeaderBtn label="Fermer" onPress={quit} /> }} />
       <T v="title">Your starting profile</T>
       <T dim>Estimation pour régler ton programme — pas une certification officielle. Elle sera affinée à chaque semaine.</T>
       <Card tone="accent">

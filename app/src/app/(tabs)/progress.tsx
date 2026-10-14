@@ -34,7 +34,7 @@ export default function Progress() {
         <T v="small" dim>Auto-estimation, pas une certification officielle.</T>
         {SKILLS.map((s) => (
           <Row key={s} style={{ justifyContent: 'space-between' }}>
-            <T style={{ width: 110 }}>{s}</T>
+            <T style={{ width: 120 }}>{s.charAt(0).toUpperCase() + s.slice(1)}</T>
             <T dim v="small">{`${Math.round((d?.week[s] ?? 0) / 60)} min/wk`}</T>
             <Tag label={levelLabel(profile.levels[s])} tone="accent" />
           </Row>

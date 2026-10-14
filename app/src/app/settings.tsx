@@ -8,6 +8,7 @@ import { scheduleSmartReminder } from '@/services/notifications';
 import { wipeAll, wipeConversations } from '@/services/storage/db';
 import { checkForUpdate, currentVersion, downloadAndInstall, type UpdateInfo } from '@/services/updates';
 import { useTheme } from '@/hooks/use-theme';
+import { plainNotes } from '@/services/updates/version';
 import { exportBackup, lastBackupAt, pickBackup, restoreBackup } from '@/services/backup';
 import { DEFAULT_UPDATE_REPO } from '@/services/storage/defaults';
 
@@ -94,7 +95,7 @@ export default function Settings() {
         {upd?.available && (
           <>
             <T v="small">{`${upd.current} → ${upd.latest}`}</T>
-            {!!upd.notes && <T v="small" dim>{upd.notes.slice(0, 600)}</T>}
+            {!!upd.notes && <T v="small" dim>{plainNotes(upd.notes, 600)}</T>}
             {upd.apkUrl ? (
               <Btn
                 label={progress !== null ? `Downloading ${Math.round(progress * 100)}%` : 'Download & install'}

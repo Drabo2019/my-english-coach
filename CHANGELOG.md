@@ -1,7 +1,8 @@
 # Changelog
 
-## Unreleased
-- Release workflow also publishes `my-english-coach.apk` (stable name) so a permanent direct-download link exists; docs and tester guide point to it.
+## [0.5.3] - 2026-10-14
+- Design polish (audit lot 1): filter chips now respond instantly to touch; small buttons and chips have larger touch areas (48 px); release notes in the update card are shown as plain text instead of raw Markdown; error messages use the theme colour (dark mode, high contrast); the header buttons of the level test keep a margin from the screen edge; the "I don't know" answer is in English and as large as the others; skill names in Progress are capitalised; no more "0.0.0" version on web.
+- Release workflow also publishes `my-english-coach.apk` (stable name) so a permanent direct-download link exists (`.../releases/latest/download/my-english-coach.apk`).
 
 ## [0.5.2] - 2026-10-13
 - Home: a visible "Check for updates" button; when a newer version exists, a card with the release notes and an "Update now" button (download + Android installer) right on the home screen.

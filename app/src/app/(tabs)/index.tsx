@@ -9,7 +9,7 @@ import { buildPlan } from '@/features/plan';
 import { isDifficult } from '@/features/srs';
 import { useLoad } from '@/hooks/use-load';
 import { allCards, dueCards, minutesToday, secondsBySkill, streakDays, topMistakes } from '@/services/storage/repo';
-import { currentVersion } from '@/services/updates';
+import { currentVersion, hasNativeVersion } from '@/services/updates';
 
 export default function Home() {
   const { profile } = useApp();
@@ -81,7 +81,7 @@ export default function Home() {
         <Btn small kind="ghost" label="⭐ My English" onPress={() => router.push('/saved')} />
         <Btn small kind="ghost" label="⚙️ Settings" onPress={() => router.push('/settings')} />
       </Row>
-      <T v="small" dim>{`Version ${currentVersion()}`}</T>
+      {hasNativeVersion() && <T v="small" dim>{`Version ${currentVersion()}`}</T>}
     </Screen>
   );
 }
