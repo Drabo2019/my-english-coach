@@ -4,7 +4,8 @@ import type { CorrectionMode, Profile, Scenario } from '@/types';
 import { LEVELS } from '@/types';
 import { fetch as streamFetch } from 'expo/fetch';
 
-import { getSettings, type Settings } from '../storage/repo';
+import { getSettings, setSettings, type Settings } from '../storage/repo';
+import { pickModel } from './model-pick';
 import { intentOf, isMeta, offlineReply } from './offline-dialogue';
 import { parseSse } from './sse';
 
@@ -125,7 +126,7 @@ async function chat(s: Settings, messages: { role: string; content: string }[], 
       }),
       signal: ctrl.signal,
     });
-    if (!res.ok) throw new Error(`LLM HTTP ${res.status}`);
+    if (!res.ok) throw new Error(`LLM HTTP ${res.status} ${(await res.text().catch(() => '')).replace(/\s+/g, ' ').slice(0, 120)}`.trim());
     const data = await res.json();
     return String(data.choices?.[0]?.message?.content ?? '').trim();
   } finally {
@@ -146,7 +147,7 @@ async function chatStream(s: Settings, messages: { role: string; content: string
       body: JSON.stringify({ model: s.llmModel, messages, temperature: 0.7, stream: true }),
       signal: ctrl.signal,
     });
-    if (!res.ok) throw new Error(`LLM HTTP ${res.status}`);
+    if (!res.ok) throw new Error(`LLM HTTP ${res.status} ${(await res.text().catch(() => '')).replace(/\s+/g, ' ').slice(0, 120)}`.trim());
     if (!res.body) throw new Error('No stream');
     const reader = res.body.getReader();
     const dec = new TextDecoder();
@@ -265,9 +266,20 @@ export interface AIRouter extends ConversationAIProvider {
   lastError: string | null;
 }
 
+/** A 404 from the chat endpoint usually means the model was renamed or retired: pick a listed one and remember it. */
+async function repairModel(s: Settings): Promise<Settings | null> {
+  const r = await testLlmConnection(s);
+  if (!r.ok) return null;
+  const pick = pickModel(r.models, s.llmModel);
+  if (!pick) return null;
+  const next = { ...s, llmModel: pick };
+  await setSettings(next);
+  return next;
+}
+
 export async function getAI(): Promise<AIRouter> {
   const settings = await getSettings();
-  const online = settings.llmEnabled ? openAICompatProvider(settings) : null;
+  let online = settings.llmEnabled ? openAICompatProvider(settings) : null;
   const router: AIRouter = {
     id: online ? online.id : scriptedProvider.id,
     online: !!online,
@@ -278,6 +290,19 @@ export async function getAI(): Promise<AIRouter> {
           return await online.reply(ctx);
         } catch (e) {
           router.lastError = String(e);
+          if (/HTTP 404/.test(String(e))) {
+            const fixed = await repairModel(settings).catch(() => null);
+            if (fixed) {
+              online = openAICompatProvider(fixed);
+              try {
+                const t = await online.reply(ctx);
+                router.lastError = null;
+                return t;
+              } catch (e2) {
+                router.lastError = String(e2);
+              }
+            }
+          }
         }
       }
       return scriptedProvider.reply(ctx);
@@ -288,9 +313,16 @@ export async function getAI(): Promise<AIRouter> {
           return await online.replyStream(ctx, onToken);
         } catch (e) {
           router.lastError = String(e);
+          if (/HTTP 404/.test(String(e))) {
+            const fixed = await repairModel(settings).catch(() => null);
+            if (fixed) {
+              online = openAICompatProvider(fixed);
+            }
+          }
           try {
             // some servers/proxies do not stream: retry once without streaming
             const t = await online.reply(ctx);
+            router.lastError = null;
             onToken(t);
             return t;
           } catch (e2) {

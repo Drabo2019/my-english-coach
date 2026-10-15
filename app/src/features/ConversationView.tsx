@@ -48,6 +48,10 @@ export function ConversationView({ scenarioId }: { scenarioId: string | null }) 
   const say = (text: string) => tts.speak(text, { rate: settings.correctionMode === 'beginner' ? 0.7 : settings.ttsRate });
 
   useEffect(() => {
+    getAI().then((ai) => setAiLabel(ai.online ? ai.id : 'offline')).catch(() => {});
+  }, []);
+
+  useEffect(() => {
     const opening = scenario ? scenario.opening : FREE_OPENERS[Math.floor(Math.random() * FREE_OPENERS.length)];
     setHistory([{ role: 'ai', text: opening }]);
     addTurn(session.current, 'ai', opening);

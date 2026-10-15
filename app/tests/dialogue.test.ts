@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { pickModel } from '@/services/ai/model-pick';
 import { intentOf, isMeta, keyWord, offlineReply } from '@/services/ai/offline-dialogue';
 import { buildFeedbackMessage, validateFeedback } from '@/services/feedback-format';
 
@@ -65,5 +66,29 @@ describe('feedback message', () => {
     expect(validateFeedback('Something is broken', 'bad')).toMatch(/describe/i);
     expect(validateFeedback('Something is broken', 'The microphone stops after two seconds')).toBeNull();
     expect(validateFeedback('Useful', '')).toBeNull();
+  });
+});
+
+
+describe('model picker', () => {
+  it('keeps a model that is still offered (with or without the models/ prefix)', () => {
+    expect(pickModel(['models/gemini-3.5-flash', 'models/gemini-3.5-pro'], 'gemini-3.5-flash')).toBeNull();
+  });
+
+  it('replaces a retired Gemini model with the newest stable flash, not lite/image/preview', () => {
+    const listed = [
+      'models/gemini-3.5-flash-lite',
+      'models/gemini-3.5-flash',
+      'models/gemini-3.6-flash-preview',
+      'models/gemini-3.5-flash-image',
+      'models/gemini-3.5-pro',
+      'models/text-embedding-005',
+    ];
+    expect(pickModel(listed, 'gemini-2.5-flash')).toBe('gemini-3.5-flash');
+  });
+
+  it('falls back to a small fast model on other providers', () => {
+    expect(pickModel(['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'whisper-large-v3'], 'old-model')).toBe('llama-3.1-8b-instant');
+    expect(pickModel([], 'x')).toBeNull();
   });
 });

@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.6.2] - 2026-10-15
+- Cloud AI: when the chat endpoint answers 404 (a renamed or retired model; Gemini 2.5 Flash is being shut down in October 2026), the app lists the models the service offers, switches to a current one, remembers it and retries. "Test connection" does the same. Error messages now include what the server said.
+- Conversation: the partner label shows the real partner as soon as the screen opens (it used to say "offline" until the first message), and the "limited replies" hint only appears when the AI is really off.
+
 ## [0.6.1] - 2026-10-15
 - Fix: text fields in Settings could overwrite a stored value with a stale one just by being focused and left (e.g. the AI address reset to the default right after tapping "Use Google Gemini", giving "fetch failed"). Fields now show external changes and only save what you typed.
 - The AI setup screen shows the address and model currently set, and connection errors name the address that was tried.

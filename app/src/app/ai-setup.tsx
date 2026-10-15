@@ -5,6 +5,7 @@ import { Linking, Switch } from 'react-native';
 import { Btn, Card, Chip, Row, SavedInput, Screen, T } from '@/components/ui';
 import { useApp } from '@/features/app-context';
 import { testLlmConnection } from '@/services/ai';
+import { pickModel } from '@/services/ai/model-pick';
 import { useTheme } from '@/hooks/use-theme';
 
 const CLOUD = [
@@ -28,12 +29,22 @@ export default function AiSetup() {
   const th = useTheme();
   const { settings, updateSettings } = useApp();
   const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState('');
   const [result, setResult] = useState<{ ok: boolean; models: string[]; error?: string } | null>(null);
 
   const test = async () => {
     setBusy(true);
     setResult(null);
-    setResult(await testLlmConnection(settings));
+    const r = await testLlmConnection(settings);
+    setResult(r);
+    if (r.ok) {
+      // Providers rename and retire models: if the one set is not offered any more, switch to a listed one.
+      const pick = pickModel(r.models, settings.llmModel);
+      if (pick) {
+        await updateSettings({ llmModel: pick });
+        setNote(`The model “${settings.llmModel}” is not offered any more. Switched to “${pick}”.`);
+      } else setNote('');
+    }
     setBusy(false);
   };
 
@@ -111,7 +122,8 @@ export default function AiSetup() {
                 <Chip key={m} label={m} active={m.replace(/^models\//, '') === settings.llmModel} onPress={() => updateSettings({ llmModel: m.replace(/^models\//, '') })} />
               ))}
             </Row>
-            {!modelOk && <T color={th.warn}>{`The model “${settings.llmModel}” is not in the list: tap one of the models above.`}</T>}
+            {!!note && <T color={th.good}>{note}</T>}
+            {!modelOk && !note && <T color={th.warn}>{`The model “${settings.llmModel}” is not in the list: tap one of the models above.`}</T>}
           </>
         )}
         {result && !result.ok && (
