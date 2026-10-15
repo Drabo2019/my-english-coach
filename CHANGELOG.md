@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.6.1] - 2026-10-15
+- Fix: text fields in Settings could overwrite a stored value with a stale one just by being focused and left (e.g. the AI address reset to the default right after tapping "Use Google Gemini", giving "fetch failed"). Fields now show external changes and only save what you typed.
+- The AI setup screen shows the address and model currently set, and connection errors name the address that was tried.
+
 ## [0.6.0] - 2026-10-15
 - Offline conversation partner: it now recognises questions addressed to it ("what do you mean?", "why do you ask?", "how are you?"), short and "I don't know" answers, greetings, and no longer repeats the same follow-up. Scripted scenarios are not advanced by these side questions.
 - Free cloud AI shortcuts (Groq, Google Gemini) in the AI setup screen, with an API-key field; a hint in conversations that offline replies are limited.

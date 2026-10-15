@@ -153,10 +153,23 @@ export function SavedInput({ value, onSave, ...p }: Omit<TextInputProps, 'value'
   const [local, setLocal] = React.useState(value);
   const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const latest = React.useRef(local);
+  const dirty = React.useRef(false);
+  const focused = React.useRef(false);
+  // The stored value can change from elsewhere (a preset button, a restore): show it, unless the person is typing.
+  React.useEffect(() => {
+    if (!focused.current && !dirty.current && value !== latest.current) {
+      latest.current = value;
+      setLocal(value);
+    }
+  }, [value]);
   const flush = () => {
     if (timer.current) clearTimeout(timer.current);
     timer.current = null;
-    onSave(latest.current);
+    // Only write what the person actually typed: merely focusing a field must never overwrite the stored value.
+    if (dirty.current) {
+      dirty.current = false;
+      onSave(latest.current);
+    }
   };
   return (
     <Input
@@ -164,11 +177,18 @@ export function SavedInput({ value, onSave, ...p }: Omit<TextInputProps, 'value'
       value={local}
       onChangeText={(v) => {
         latest.current = v;
+        dirty.current = true;
         setLocal(v);
         if (timer.current) clearTimeout(timer.current);
         timer.current = setTimeout(flush, 500);
       }}
-      onBlur={flush}
+      onFocus={() => {
+        focused.current = true;
+      }}
+      onBlur={() => {
+        focused.current = false;
+        flush();
+      }}
     />
   );
 }

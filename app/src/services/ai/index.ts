@@ -176,7 +176,8 @@ export async function testLlmConnection(s: Pick<Settings, 'llmBaseUrl' | 'llmApi
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 8_000);
   try {
-    const res = await fetch(`${s.llmBaseUrl.replace(/\/$/, '')}/models`, {
+    const base = s.llmBaseUrl.trim().replace(/\/$/, '');
+    const res = await fetch(`${base}/models`, {
       headers: s.llmApiKey ? { Authorization: `Bearer ${s.llmApiKey}` } : {},
       signal: ctrl.signal,
     });
@@ -188,7 +189,7 @@ export async function testLlmConnection(s: Pick<Settings, 'llmBaseUrl' | 'llmApi
     const msg =
       e instanceof Error && e.name === 'AbortError'
         ? 'Timeout: no answer within 8 s (wrong IP, firewall, or the server is not listening on the network).'
-        : String(e);
+        : `${String(e)} (address tried: ${s.llmBaseUrl.trim() || 'empty'})`;
     return { ok: false, models: [], error: msg };
   } finally {
     clearTimeout(timer);

@@ -14,6 +14,20 @@ Rule: always keep a **usable build**. Each phase ends with BUILD → TEST → RU
 | **6** Web | Static export, Web Speech API, PWA offline | |
 | **7** Cloud sync | Optional account (self-hostable, e.g. Supabase/PocketBase), encrypted backup, multi-device | |
 
+## From the first outside tester (2026-10-15)
+
+First feedback from someone outside the project, on 0.5.x:
+
+1. **"Too academic."** Not yet pinned to a screen; ask which one. Known contributing factors found in the code:
+   - the onboarding *goals* (Work, Travel…) are stored but **no screen uses them**; they should drive scenarios, vocabulary and the plan;
+   - a 31-question level test is the first thing a new user meets (exam feel); make it shorter, adaptive and clearly optional;
+   - Learn is a menu of school subjects; Today should lead with conversation and real situations.
+2. **Conversation did not work well** (screenshot): the offline partner ignored what the user said. Improved in 0.6.0 (intents: clarify, why-ask, about-you, short answers, no repeated follow-ups). A real conversation still needs an LLM: free cloud shortcuts (Groq, Gemini) added; an on-device model remains an open trial.
+3. **In-app feedback** with a description, version and device: done in 0.6.0 via the share sheet (no server). Optional direct WhatsApp number in `src/config.ts`. A server (e.g. Supabase, as in Abidjan Mobilité) is a separate privacy decision.
+4. **Appearance** (system / light / dark) and **share the app**: done in 0.6.0.
+
+Next candidates, in order of expected value: goals that actually drive content; shorter adaptive level test; conversation-first Today; better offline replies from the learner's own words (needs real transcripts from testers).
+
 ## Backlog (unordered)
 
 - Content: MVP volume targets met (0.2.x). Next growth is feedback-driven (see in-app Feedback counts).

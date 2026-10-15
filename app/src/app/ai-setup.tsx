@@ -66,6 +66,7 @@ export default function AiSetup() {
         <T v="small" dim>
           Free plans, limits and model names are decided by each provider and can change. If the test fails, pick a model from the list it shows.
         </T>
+        <T v="small" dim>{`Currently set: ${settings.llmBaseUrl}  ·  model ${settings.llmModel}${settings.llmEnabled ? '' : '  ·  AI is off'}`}</T>
         <T v="small">API key (cloud services only)</T>
         <SavedInput
           value={settings.llmApiKey}
