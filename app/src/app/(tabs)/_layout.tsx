@@ -5,6 +5,7 @@ import { Pressable, View, type ColorValue } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme } from '@/hooks/use-theme';
+import { shareApp } from '@/services/share';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -22,9 +23,10 @@ const tabIcon = (name: string) =>
   };
 
 /** Search, "How do I say…?" and Settings are reachable from every tab. */
-const HEADER_ACTIONS: { icon: IconName; label: string; route: string }[] = [
+const HEADER_ACTIONS: { icon: IconName; label: string; route?: string; run?: () => void }[] = [
   { icon: 'search-outline', label: 'Search', route: '/search' },
   { icon: 'chatbubble-ellipses-outline', label: 'How do I say…?', route: '/how-to-say' },
+  { icon: 'share-social-outline', label: 'Share the app', run: shareApp },
   { icon: 'settings-outline', label: 'Settings', route: '/settings' },
 ];
 
@@ -34,11 +36,11 @@ function HeaderActions() {
     <View style={{ flexDirection: 'row', marginRight: 6 }}>
       {HEADER_ACTIONS.map((a) => (
         <Pressable
-          key={a.route}
+          key={a.label}
           accessibilityRole="button"
           accessibilityLabel={a.label}
           hitSlop={4}
-          onPress={() => router.push(a.route as never)}
+          onPress={() => (a.run ? a.run() : router.push(a.route as never))}
           style={({ pressed }) => ({ width: 44, height: 44, alignItems: 'center', justifyContent: 'center', opacity: pressed ? 0.6 : 1 })}>
           <Ionicons name={a.icon} size={22} color={th.textSecondary} />
         </Pressable>

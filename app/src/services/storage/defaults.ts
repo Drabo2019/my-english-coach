@@ -23,6 +23,7 @@ export interface Settings {
   highContrast: boolean;
   ttsRate: number;
   notifications: boolean;
+  themeMode: 'system' | 'light' | 'dark';
 }
 
 export const DEFAULT_UPDATE_REPO = 'Drabo2019/my-english-coach';
@@ -39,4 +40,5 @@ export const DEFAULT_SETTINGS: Settings = {
   highContrast: false,
   ttsRate: 0.9,
   notifications: true,
+  themeMode: 'system',
 };

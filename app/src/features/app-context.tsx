@@ -1,3 +1,4 @@
+import { Appearance } from 'react-native';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { DEFAULT_PROFILE, DEFAULT_SETTINGS, getProfile, getSettings, setProfile, setSettings, type Settings } from '@/services/storage/repo';
@@ -35,6 +36,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     reload();
   }, [reload]);
+
+  // "System" follows the phone; light/dark override it app-wide (navigation, status bar and our own theme).
+  useEffect(() => {
+    try {
+      Appearance.setColorScheme(settings.themeMode === 'system' ? 'unspecified' : settings.themeMode);
+    } catch {
+      /* not supported on this platform */
+    }
+  }, [settings.themeMode]);
 
   const updateProfile = useCallback(async (patch: Partial<Profile>) => {
     const next = { ...(await getProfile()), ...patch };

@@ -1,11 +1,28 @@
 import { Stack } from 'expo-router';
 import React, { useState } from 'react';
-import { Switch } from 'react-native';
+import { Linking, Switch } from 'react-native';
 
 import { Btn, Card, Chip, Row, SavedInput, Screen, T } from '@/components/ui';
 import { useApp } from '@/features/app-context';
 import { testLlmConnection } from '@/services/ai';
 import { useTheme } from '@/hooks/use-theme';
+
+const CLOUD = [
+  {
+    id: 'groq',
+    name: 'Groq',
+    baseUrl: 'https://api.groq.com/openai/v1',
+    model: 'llama-3.1-8b-instant',
+    keysUrl: 'https://console.groq.com/keys',
+  },
+  {
+    id: 'gemini',
+    name: 'Google Gemini',
+    baseUrl: 'https://generativelanguage.googleapis.com/v1beta/openai',
+    model: 'gemini-2.5-flash',
+    keysUrl: 'https://aistudio.google.com/apikey',
+  },
+] as const;
 
 export default function AiSetup() {
   const th = useTheme();
@@ -20,7 +37,7 @@ export default function AiSetup() {
     setBusy(false);
   };
 
-  const modelOk = result?.ok && result.models.some((m) => m === settings.llmModel || m.startsWith(`${settings.llmModel}:`));
+  const modelOk = result?.ok && result.models.some((m) => m.replace(/^models\//, '') === settings.llmModel || m.startsWith(`${settings.llmModel}:`));
 
   return (
     <Screen>
@@ -31,7 +48,36 @@ export default function AiSetup() {
       </T>
 
       <Card>
-        <T v="h2">1 · Install Ollama on your PC</T>
+        <T v="h2">Option A · A free cloud AI (no PC needed)</T>
+        <T>
+          Create a free account with one of these services, copy your API key, paste it below, then run the test. Only the text of your conversation is
+          sent to the service you pick, never your audio.
+        </T>
+        {CLOUD.map((c) => (
+          <Row key={c.id}>
+            <Btn
+              small
+              label={`Use ${c.name}`}
+              onPress={() => updateSettings({ llmBaseUrl: c.baseUrl, llmModel: c.model, llmEnabled: true })}
+            />
+            <Btn small kind="ghost" label={`Get a ${c.name} key`} onPress={() => Linking.openURL(c.keysUrl)} />
+          </Row>
+        ))}
+        <T v="small" dim>
+          Free plans, limits and model names are decided by each provider and can change. If the test fails, pick a model from the list it shows.
+        </T>
+        <T v="small">API key (cloud services only)</T>
+        <SavedInput
+          value={settings.llmApiKey}
+          onSave={(v) => updateSettings({ llmApiKey: v.trim() })}
+          autoCapitalize="none"
+          secureTextEntry
+          placeholder="Paste your API key"
+        />
+      </Card>
+
+      <Card>
+        <T v="h2">Option B · Your own PC. Step 1: install Ollama</T>
         <T>Download Ollama (ollama.com), install it, then run this in a terminal:</T>
         <T style={{ fontFamily: 'monospace' }}>ollama pull llama3.2</T>
         <T v="small" dim>A light model (about 2 GB), good enough in English. For better corrections if your PC has 16 GB of RAM: qwen2.5:7b.</T>
@@ -61,7 +107,7 @@ export default function AiSetup() {
             <T color={th.good}>{`✅ Connected. ${result.models.length} model(s) available.`}</T>
             <Row>
               {result.models.slice(0, 8).map((m) => (
-                <Chip key={m} label={m} active={m === settings.llmModel} onPress={() => updateSettings({ llmModel: m })} />
+                <Chip key={m} label={m} active={m.replace(/^models\//, '') === settings.llmModel} onPress={() => updateSettings({ llmModel: m.replace(/^models\//, '') })} />
               ))}
             </Row>
             {!modelOk && <T color={th.warn}>{`The model “${settings.llmModel}” is not in the list: tap one of the models above.`}</T>}

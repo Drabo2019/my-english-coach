@@ -1,4 +1,4 @@
-# My English Coach — Guide du testeur (version 0.5.4)
+# My English Coach — Guide du testeur (version 0.6.0)
 
 Merci d'accepter de tester l'application. C'est une **version de test entre personnes de confiance** : elle n'est pas sur le Play Store, et vos retours servent à décider ce qu'on améliore. Vous êtes déjà à l'aise en anglais : c'est justement ce qui nous intéresse. La question centrale est **« est-ce que cette application m'aide encore à progresser à mon niveau (B2, C1, C2) ? »**
 
@@ -32,7 +32,7 @@ My English Coach est un entraîneur d'anglais pour francophones. Il suit une log
 
 1. **Touchez ce lien depuis votre téléphone** pour télécharger l'application (environ 70 Mo) :
    [**⬇ Télécharger My English Coach (APK)**](https://github.com/Drabo2019/my-english-coach/releases/latest/download/my-english-coach.apk)
-   Ce lien donne toujours la **dernière version** (actuellement la 0.5.4). Notes de version : [page des versions](https://github.com/Drabo2019/my-english-coach/releases/latest). Vous pouvez aussi recevoir le fichier par WhatsApp / Drive / clé USB.
+   Ce lien donne toujours la **dernière version** (actuellement la 0.6.0). Notes de version : [page des versions](https://github.com/Drabo2019/my-english-coach/releases/latest). Vous pouvez aussi recevoir le fichier par WhatsApp / Drive / clé USB.
 2. Touchez le fichier. Android demande d'**autoriser l'installation d'applications inconnues** pour l'application que vous utilisez (Chrome, Fichiers, WhatsApp…) : autorisez.
 3. **Google Play Protect** peut afficher « application non reconnue » : choisissez **Installer quand même**. C'est normal pour une version de test.
 4. Ouvrez **My English Coach**.
@@ -73,7 +73,8 @@ Cochez au fur et à mesure. Pour chaque point, notez : **ça marche / ça ne mar
 - [ ] **Learn → 5-Minute English** et **Learn → My English** (éléments sauvegardés) fonctionnent.
 
 ### Parler (l'onglet le plus important)
-- [ ] **🎙 Talk to me (free talk)** : parlez 2 à 3 minutes. L'application vous comprend-elle ? Les réponses sont-elles naturelles ?
+- [ ] **🎙 Talk to me (free talk)** : parlez 2 à 3 minutes. L'application vous comprend-elle ? Les réponses sont-elles naturelles ? Posez-lui une question (« what do you mean? », « how are you? ») : répond-elle ?
+- [ ] **Vraie conversation (optionnel)** : touchez le message « Connect a free AI » dans la conversation, puis **Option A** (Groq ou Google Gemini, compte gratuit et clé à coller). La conversation devient-elle naturelle ?
 - [ ] À la fin, **❌/✅ corrections** : sont-elles justes ? Y a-t-il de **fausses corrections** ?
 - [ ] **Find the words** : l'indice progressif vous aide-t-il ? Le **temps avant vos premiers mots** s'affiche-t-il ?
 - [ ] **Shadowing** (niveau C1 ou C2) : la phrase est lue, puis le micro s'ouvre. Le micro **capte-t-il la voix de synthèse** (ce qui fausserait le score) ?
@@ -94,6 +95,8 @@ Cochez au fur et à mesure. Pour chaque point, notez : **ça marche / ça ne mar
 - [ ] **How do I say…?** (icône en forme de bulle, en haut à droite) : donnez une phrase en français, vérifiez la traduction.
 
 ### Réglages
+- [ ] **Settings → Audio and accessibility → Appearance** : System / Light / Dark. Le thème change-t-il partout, sans zone illisible ?
+- [ ] **Icône de partage** (en haut à droite) : le message avec le lien de téléchargement s'ouvre-t-il dans WhatsApp ?
 - [ ] **Backup** : exporter la progression en fichier JSON puis la **restaurer** (idéalement après réinstallation).
 - [ ] **Settings → App → Advanced → AI conversation partner** : optionnel, uniquement si vous avez Ollama sur un ordinateur (voir « Setup guide and connection test »).
 
@@ -105,7 +108,7 @@ Cochez au fur et à mesure. Pour chaque point, notez : **ça marche / ça ne mar
 2. **Pertinence** : le vocabulaire et les phrases C1/C2 sont-ils ceux dont on a vraiment besoin (travail, réunions, négociation, e-mails) ?
 3. **Justesse du correcteur** : donnez les cas où il **corrige à tort** ou **laisse passer** une vraie erreur.
 4. **Reconnaissance vocale** : comprend-elle votre accent ? Votre téléphone ? Dans le bruit ?
-5. **Conversation** : le partenaire hors ligne est volontairement simple. Est-ce un frein à votre niveau ?
+5. **Conversation** : le partenaire hors ligne est simple. Est-ce un frein à votre niveau ? Avec une IA gratuite connectée, est-ce plus naturel ?
 6. **Habitude** : revenez-vous le lendemain ? Qu'est-ce qui vous fait décrocher ?
 7. **Ce qui manque** : une fonction, un type d'exercice, un sujet.
 
@@ -113,28 +116,16 @@ Cochez au fur et à mesure. Pour chaque point, notez : **ça marche / ça ne mar
 
 ## 6. Envoyer vos retours
 
-**Dans l'application (le plus simple) :**
-- Sur chaque écran, le bouton **💬 Feedback on this screen** enregistre un retour en un tap (« Too easy », « This correction is wrong », « I get stuck here »…), avec une note facultative.
-- **Progress → Send feedback / report an issue** pour un retour général.
-- Pour nous les envoyer : **Feedback → Export (share as text)**, puis choisissez WhatsApp.
+**Dans l'application (le plus simple) : bouton « Send feedback »**
+1. Ouvrez **Settings → App → Send feedback** (ou **Progress → Send feedback / report an issue**, ou le bouton **💬 Feedback on this screen** présent sur plusieurs écrans : il indique automatiquement l'écran concerné).
+2. Choisissez le **type** : *Something is broken*, *This correction is wrong*, *Too easy*, *Too hard*, *Too academic*, *Suggestion*…
+3. **Décrivez** en quelques mots : ce que vous faisiez, ce qui s'est passé, ce que vous attendiez. Pour un problème, la description est demandée.
+4. Touchez **Send feedback** : le message s'ouvre dans **WhatsApp** (ou l'application de votre choix : e-mail, SMS…), déjà rempli avec la **version de l'application, le modèle de téléphone, la version d'Android, l'écran et votre niveau**. Il ne reste qu'à l'envoyer.
+5. Pour un problème d'affichage, **ajoutez une capture d'écran** dans la même conversation.
 
-**Hors de l'application :** envoyez-nous un message avec
-1. le **nom de l'écran**,
-2. ce que vous avez fait,
-3. ce qui s'est passé / ce que vous attendiez,
-4. une **capture d'écran** si possible,
-5. votre **modèle de téléphone** et la **version d'Android**.
+Vos retours sont aussi gardés sur le téléphone ; **Send feedback → Share the whole list** les envoie tous d'un coup.
 
-### Modèle de message (à copier)
-
-```
-Écran :
-Ce que j'ai fait :
-Ce qui s'est passé :
-Ce que j'attendais :
-Téléphone / Android :
-Version de l'app (Settings) :
-```
+**Hors de l'application :** envoyez-nous un message avec l'écran, ce que vous avez fait, ce qui s'est passé, une capture d'écran, votre modèle de téléphone et la version d'Android.
 
 ---
 
@@ -157,7 +148,7 @@ Version de l'app (Settings) :
 ## 8. Limites connues (à savoir avant de juger)
 
 - **Voix de synthèse** : celles d'Android (qualité variable selon le téléphone). Des voix plus naturelles sont à l'étude ; votre retour compte pour décider.
-- **Partenaire de conversation hors ligne** : réponses scriptées, donc limitées. Un vrai modèle de langage est possible via un ordinateur personnel (Ollama), mais pas inclus.
+- **Partenaire de conversation hors ligne** : sans modèle de langage, il écoute quelques intentions (« what do you mean ? », « how are you ? », réponses très courtes) mais reste limité. Pour une vraie conversation : un compte gratuit Groq ou Google Gemini (clé à coller dans l'application, voir « Connect a free AI »), ou Ollama sur un ordinateur. Les offres gratuites et les noms de modèles dépendent de ces services et peuvent changer.
 - **Prononciation** : mesure l'**intelligibilité** (le mot est-il reconnu ?), pas les phonèmes.
 - **Correcteur** : règles pour les erreurs typiques des francophones ; il ne comprend pas tout et peut se tromper.
 - **Pas de version iPhone** pour l'instant. Pas de synchronisation entre appareils (utiliser Backup).

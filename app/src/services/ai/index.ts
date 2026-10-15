@@ -5,6 +5,7 @@ import { LEVELS } from '@/types';
 import { fetch as streamFetch } from 'expo/fetch';
 
 import { getSettings, type Settings } from '../storage/repo';
+import { intentOf, isMeta, offlineReply } from './offline-dialogue';
 import { parseSse } from './sse';
 
 export interface Turn {
@@ -41,31 +42,25 @@ const levelName = (p: Profile) => LEVELS[Math.round((p.levels.speaking + p.level
 // ---------------------------------------------------------------------------------------------
 // Offline provider: scripted scenarios + rule-based corrections + phrasebook. No network, no model.
 // ---------------------------------------------------------------------------------------------
-const REACTIONS = ['I see.', 'Right.', 'Okay.', 'That makes sense.', 'Interesting.', 'Nice.'];
-const FOLLOW_UPS = [
-  'Can you tell me a bit more about that?',
-  'Why do you say that?',
-  'What happened next?',
-  'How do you feel about it?',
-  'Could you give me an example?',
-];
-
 export const scriptedProvider: ConversationAIProvider = {
   id: 'offline-scripted',
   online: false,
   async reply({ scenario, history, mode }) {
-    const userTurns = history.filter((t) => t.role === 'user').length;
-    const react = REACTIONS[userTurns % REACTIONS.length];
-    const next = scenario?.script[userTurns]?.ai;
-    if (mode === 'strict') {
-      const f = analyze(history[history.length - 1]?.text ?? '')[0];
-      if (f) return `Quick fix: "${f.correction}". ${f.explanation}\n${next ?? FOLLOW_UPS[userTurns % FOLLOW_UPS.length]}`;
-    }
-    if (next) return `${react} ${next}`;
-    if (scenario && userTurns >= scenario.script.length) {
+    const last = history[history.length - 1];
+    const lastIsMeta = last?.role === 'user' && isMeta(intentOf(last.text));
+    // Meta turns ("what do you mean?", "how are you?") are answered without advancing the scripted scenario.
+    const progressed = history.filter((t) => t.role === 'user' && !isMeta(intentOf(t.text))).length;
+    const next = scenario?.script[progressed]?.ai;
+    if (scenario && !next && !lastIsMeta && progressed >= scenario.script.length) {
       return 'Thank you, that was a good conversation. Tap “Finish” to see your feedback.';
     }
-    return `${react} ${FOLLOW_UPS[userTurns % FOLLOW_UPS.length]}`;
+    const body = offlineReply({ history, scriptedNext: next });
+    if (mode === 'strict' && last?.role === 'user' && !lastIsMeta) {
+      const f = analyze(last.text)[0];
+      if (f) return `Quick fix: "${f.correction}". ${f.explanation}
+${body}`;
+    }
+    return body;
   },
   async replyStream(ctx, onToken) {
     const t = await scriptedProvider.reply(ctx);

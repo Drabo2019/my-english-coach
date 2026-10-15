@@ -5,6 +5,7 @@ import { Alert, Linking, Pressable, Switch } from 'react-native';
 import { Btn, Card, Chip, Row, SavedInput, Screen, T } from '@/components/ui';
 import { useApp } from '@/features/app-context';
 import { scheduleSmartReminder } from '@/services/notifications';
+import { shareApp } from '@/services/share';
 import { wipeAll, wipeConversations } from '@/services/storage/db';
 import { checkForUpdate, currentVersion, downloadAndInstall, hasNativeVersion, type UpdateInfo } from '@/services/updates';
 import { useTheme } from '@/hooks/use-theme';
@@ -110,6 +111,12 @@ export default function Settings() {
 
       <Card>
         <T v="h2">Audio and accessibility</T>
+        <T v="small" dim>Appearance</T>
+        <Row>
+          {(['system', 'light', 'dark'] as const).map((m) => (
+            <Chip key={m} label={m === 'system' ? 'System' : m === 'light' ? 'Light' : 'Dark'} active={settings.themeMode === m} onPress={() => updateSettings({ themeMode: m })} />
+          ))}
+        </Row>
         <T v="small" dim>Text size</T>
         <Row>
           {[0.9, 1, 1.15, 1.3].map((f) => (
@@ -166,6 +173,8 @@ export default function Settings() {
         </Row>
         <Btn kind="ghost" label="Check for updates" onPress={check} />
         {!!msg && <T>{msg}</T>}
+        <Btn kind="ghost" label="Send feedback" onPress={() => router.push('/feedback')} />
+        <Btn kind="ghost" label="Share the app with a friend" onPress={shareApp} />
         {upd?.available && (
           <>
             <T v="small">{`${upd.current} → ${upd.latest}`}</T>

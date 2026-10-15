@@ -188,6 +188,11 @@ export function ConversationView({ scenarioId }: { scenarioId: string | null }) 
           ))}
         </ScrollView>
         <T v="small" dim style={{ marginTop: 4 }}>{`Partner: ${aiLabel}${scenario ? ` · Goal: ${scenario.goal}` : ''}`}</T>
+        {aiLabel.toLowerCase().includes('offline') && (
+          <T v="small" color={th.accent} onPress={() => router.push('/ai-setup')} style={{ marginTop: 2 }}>
+            The offline partner has limited replies. Connect a free AI for real conversation ›
+          </T>
+        )}
       </View>
 
       <ScrollView ref={scroll} contentContainerStyle={{ padding: 12, gap: 8 }}>

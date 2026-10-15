@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0] - 2026-10-15
+- Offline conversation partner: it now recognises questions addressed to it ("what do you mean?", "why do you ask?", "how are you?"), short and "I don't know" answers, greetings, and no longer repeats the same follow-up. Scripted scenarios are not advanced by these side questions.
+- Free cloud AI shortcuts (Groq, Google Gemini) in the AI setup screen, with an API-key field; a hint in conversations that offline replies are limited.
+- Send feedback from the app: choose a type, describe the problem, and the message opens in WhatsApp (or any app) with version, phone model, Android version, screen and level already included. Optional WhatsApp number can be set in `src/config.ts` to go straight to one chat.
+- Appearance setting: System, Light or Dark.
+- Share the app: share icon in the header and a button in Settings, with the direct download link.
+
 ## [0.5.4] - 2026-10-14
 - Design (audit lot 3): motion and feedback with restraint. Progress bars ease to their value and result cards fade in, both disabled when the system asks to reduce animations; light haptics when you grade a review card and on right/wrong answers in Sentences; buttons press in slightly. Text tracking follows size (tighter titles, slightly open small text) and system font scaling is capped at 140 %. Progress screen: one bar per skill, plural fixes and useful empty states.
 

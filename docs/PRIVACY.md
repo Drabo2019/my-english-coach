@@ -12,6 +12,8 @@ Voice conversations are personal. Defaults are conservative.
 | Update check | `api.github.com` (repository you set); once a day automatically, or on demand | A normal HTTPS request; GitHub sees your IP. Can be turned off in Settings. |
 | Backup file | Only when you tap Export: a JSON file you choose where to save | Contains your progress and conversation text. Your LLM API key is never included. |
 | Conversation memory | A short summary of recent conversations, stored locally and sent to *your* LLM endpoint inside the system prompt when AI is enabled | Deleted with “Delete conversation history”. |
+| Feedback message | Only when you tap Send feedback: a text with version, phone model, screen, level and your description | Goes to the app you choose (WhatsApp, e-mail…), not to any server of ours. |
+| Cloud AI (optional) | Only if you pick Groq/Gemini and paste your own key | Conversation text goes to that provider under its own policy. |
 | "Learn More" | Opens external sites in the browser | Their own policies apply. |
 
 ## Speech recognition caveat (important)
