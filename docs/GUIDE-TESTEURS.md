@@ -1,4 +1,4 @@
-# My English Coach — Guide du testeur (version 0.6.0)
+# My English Coach — Guide du testeur (version 0.6.4)
 
 Merci d'accepter de tester l'application. C'est une **version de test entre personnes de confiance** : elle n'est pas sur le Play Store, et vos retours servent à décider ce qu'on améliore. Vous êtes déjà à l'aise en anglais : c'est justement ce qui nous intéresse. La question centrale est **« est-ce que cette application m'aide encore à progresser à mon niveau (B2, C1, C2) ? »**
 
@@ -32,7 +32,7 @@ My English Coach est un entraîneur d'anglais pour francophones. Il suit une log
 
 1. **Touchez ce lien depuis votre téléphone** pour télécharger l'application (environ 70 Mo) :
    [**⬇ Télécharger My English Coach (APK)**](https://github.com/Drabo2019/my-english-coach/releases/latest/download/my-english-coach.apk)
-   Ce lien donne toujours la **dernière version** (actuellement la 0.6.0). Notes de version : [page des versions](https://github.com/Drabo2019/my-english-coach/releases/latest). Vous pouvez aussi recevoir le fichier par WhatsApp / Drive / clé USB.
+   Ce lien donne toujours la **dernière version** (actuellement la 0.6.4). Notes de version : [page des versions](https://github.com/Drabo2019/my-english-coach/releases/latest). Vous pouvez aussi recevoir le fichier par WhatsApp / Drive / clé USB.
 2. Touchez le fichier. Android demande d'**autoriser l'installation d'applications inconnues** pour l'application que vous utilisez (Chrome, Fichiers, WhatsApp…) : autorisez.
 3. **Google Play Protect** peut afficher « application non reconnue » : choisissez **Installer quand même**. C'est normal pour une version de test.
 4. Ouvrez **My English Coach**.
@@ -74,7 +74,7 @@ Cochez au fur et à mesure. Pour chaque point, notez : **ça marche / ça ne mar
 
 ### Parler (l'onglet le plus important)
 - [ ] **🎙 Talk to me (free talk)** : parlez 2 à 3 minutes. L'application vous comprend-elle ? Les réponses sont-elles naturelles ? Posez-lui une question (« what do you mean? », « how are you? ») : répond-elle ?
-- [ ] **Vraie conversation (optionnel)** : touchez le message « Connect a free AI » dans la conversation, puis **Option A** (Groq ou Google Gemini, compte gratuit et clé à coller). La conversation devient-elle naturelle ?
+- [ ] **Vraie conversation (optionnel)** : touchez le message « Connect a free AI » dans la conversation, puis **Option A** (Google Gemini ou Groq : compte gratuit, clé à créer et à coller). Touchez **Use …**, collez la clé, puis **Test connection** : l'application choisit toute seule un modèle qui répond. La conversation devient-elle naturelle ? Les réponses arrivent-elles assez vite ?
 - [ ] À la fin, **❌/✅ corrections** : sont-elles justes ? Y a-t-il de **fausses corrections** ?
 - [ ] **Find the words** : l'indice progressif vous aide-t-il ? Le **temps avant vos premiers mots** s'affiche-t-il ?
 - [ ] **Shadowing** (niveau C1 ou C2) : la phrase est lue, puis le micro s'ouvre. Le micro **capte-t-il la voix de synthèse** (ce qui fausserait le score) ?
