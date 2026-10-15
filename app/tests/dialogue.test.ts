@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { pickModel, rankModels } from '@/services/ai/model-pick';
+import { isBusyError, withRetry } from '@/services/ai/retry';
 import { intentOf, isMeta, keyWord, offlineReply } from '@/services/ai/offline-dialogue';
 import { buildFeedbackMessage, validateFeedback } from '@/services/feedback-format';
 
@@ -99,5 +100,37 @@ describe('model ranking', () => {
     const order = rankModels(listed, ['gemini-2.5-flash']);
     expect(order[0]).toBe('gemini-3.5-flash');
     expect(order).not.toContain('gemini-2.5-flash');
+  });
+});
+
+
+describe('transient cloud errors', () => {
+  it('retries a busy model (503/429) and then succeeds', async () => {
+    let calls = 0;
+    const waits: number[] = [];
+    const out = await withRetry(
+      async () => {
+        calls += 1;
+        if (calls < 3) throw new Error('LLM HTTP 503 This model is currently experiencing high demand');
+        return 'ok';
+      },
+      async (ms) => {
+        waits.push(ms);
+      },
+    );
+    expect(out).toBe('ok');
+    expect(calls).toBe(3);
+    expect(waits).toEqual([1500, 3000]);
+  });
+
+  it('does not retry a real error, and gives up after the attempts', async () => {
+    let calls = 0;
+    await expect(withRetry(async () => { calls += 1; throw new Error('LLM HTTP 401 invalid key'); }, async () => {})).rejects.toThrow(/401/);
+    expect(calls).toBe(1);
+    let busy = 0;
+    await expect(withRetry(async () => { busy += 1; throw new Error('LLM HTTP 503'); }, async () => {})).rejects.toThrow(/503/);
+    expect(busy).toBe(3);
+    expect(isBusyError('Error: LLM HTTP 429 quota')).toBe(true);
+    expect(isBusyError('Error: LLM HTTP 404')).toBe(false);
   });
 });

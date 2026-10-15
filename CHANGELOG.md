@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.6.4] - 2026-10-15
+- Cloud AI: a busy model (HTTP 503 "high demand", or 429) is retried twice with a short pause before falling back to the offline partner, and the message says the service is busy instead of showing raw JSON.
+- Build script: removes the generated android folder up front with a long-path-safe command (Windows "EBUSY" failures between builds).
+
 ## [0.6.3] - 2026-10-15
 - Cloud AI: a provider can keep listing a model it no longer serves (Gemini 2.5 Flash answered 404 "no longer available" while still listed). The app now verifies the model with a real one-word chat, and on a 404 tries the best listed candidates until one answers, then remembers it. "Test connection" is end-to-end and tells you when it switched model.
 

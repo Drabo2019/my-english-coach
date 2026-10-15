@@ -2,7 +2,7 @@
   "expo": {
     "name": "My English Coach",
     "slug": "my-english-coach",
-    "version": "0.6.3",
+    "version": "0.6.4",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "englishcoach",
@@ -19,7 +19,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.drabo.englishcoach",
-      "versionCode": 18,
+      "versionCode": 19,
       "permissions": [
         "RECORD_AUDIO",
         "INTERNET",

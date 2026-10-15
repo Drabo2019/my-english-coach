@@ -10,6 +10,11 @@ KEYENV="${COACH_KEYSTORE_ENV:-$HOME/.english-coach/keystore.env}"
 if [ -f "$KEYENV" ]; then set -a; . "$KEYENV"; set +a; else echo "WARN: no keystore env -> debug-signed APK (updates will NOT install over a release-signed one)"; fi
 # a Gradle daemon from the previous build can lock android/ and make prebuild's clean fail (EBUSY)
 [ -x android/gradlew.bat ] && (cd android && ./gradlew.bat --stop >/dev/null 2>&1 || true)
+# Remove the generated native folder up front: Windows long paths / locked files make prebuild's own clean fail (EBUSY).
+if [ -d android ]; then
+  MSYS2_ARG_CONV_EXCL='*' cmd.exe /c rd /s /q "\\\\?\\$(cygpath -w "$PWD/android")" >/dev/null 2>&1 || true
+  rm -rf android 2>/dev/null || true
+fi
 npx expo prebuild --platform android --no-install
 printf 'sdk.dir=%s\n' "$(cygpath -m "$ANDROID_HOME" 2>/dev/null || echo "$ANDROID_HOME")" > android/local.properties
 (cd android && ./gradlew.bat assembleRelease -PreactNativeArchitectures="${ARCHS:-arm64-v8a,x86_64}" --console=plain)

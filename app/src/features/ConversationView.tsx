@@ -9,6 +9,7 @@ import { useApp } from '@/features/app-context';
 import { useTheme } from '@/hooks/use-theme';
 import { getAI, type ReviewResult, type Turn } from '@/services/ai';
 import { memoryPrompt, offlineSummary, remember } from '@/services/ai/memory';
+import { isBusyError } from '@/services/ai/retry';
 import { stt, tts } from '@/services/speech';
 import { addTurn, logActivity, recordMistake } from '@/services/storage/repo';
 import type { CorrectionMode } from '@/types';
@@ -92,7 +93,7 @@ export function ConversationView({ scenarioId }: { scenarioId: string | null }) 
           return [...h.slice(0, -1), { role: 'ai', text: partial }];
         });
       });
-      if (ai.lastError) setErr(`AI unreachable, using offline mode (${ai.lastError.slice(0, 80)})`);
+      if (ai.lastError) setErr(isBusyError(ai.lastError) ? 'The AI service is busy right now, so this reply comes from the offline partner. Try again in a moment.' : `AI unreachable, using offline mode (${ai.lastError.slice(0, 80)})`);
       addTurn(session.current, 'ai', reply);
       say(reply);
     } finally {

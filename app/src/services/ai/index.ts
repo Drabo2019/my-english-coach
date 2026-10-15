@@ -6,6 +6,7 @@ import { fetch as streamFetch } from 'expo/fetch';
 
 import { getSettings, setSettings, type Settings } from '../storage/repo';
 import { rankModels } from './model-pick';
+import { withRetry } from './retry';
 import { intentOf, isMeta, offlineReply } from './offline-dialogue';
 import { parseSse } from './sse';
 
@@ -307,7 +308,7 @@ export async function getAI(): Promise<AIRouter> {
     async reply(ctx) {
       if (online) {
         try {
-          return await online.reply(ctx);
+          return await withRetry(() => online!.reply(ctx));
         } catch (e) {
           router.lastError = String(e);
           if (/HTTP 404/.test(String(e))) {
@@ -330,7 +331,7 @@ export async function getAI(): Promise<AIRouter> {
     async replyStream(ctx, onToken) {
       if (online) {
         try {
-          return await online.replyStream(ctx, onToken);
+          return await withRetry(() => online!.replyStream(ctx, onToken));
         } catch (e) {
           router.lastError = String(e);
           if (/HTTP 404/.test(String(e))) {
@@ -339,7 +340,7 @@ export async function getAI(): Promise<AIRouter> {
           }
           try {
             // some servers/proxies do not stream: retry once without streaming
-            const t = await online.reply(ctx);
+            const t = await withRetry(() => online!.reply(ctx));
             router.lastError = null;
             onToken(t);
             return t;
