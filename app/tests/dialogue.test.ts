@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { pickModel } from '@/services/ai/model-pick';
+import { pickModel, rankModels } from '@/services/ai/model-pick';
 import { intentOf, isMeta, keyWord, offlineReply } from '@/services/ai/offline-dialogue';
 import { buildFeedbackMessage, validateFeedback } from '@/services/feedback-format';
 
@@ -90,5 +90,14 @@ describe('model picker', () => {
   it('falls back to a small fast model on other providers', () => {
     expect(pickModel(['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'whisper-large-v3'], 'old-model')).toBe('llama-3.1-8b-instant');
     expect(pickModel([], 'x')).toBeNull();
+  });
+});
+
+describe('model ranking', () => {
+  it('skips a model that is listed but refused, and tries the next best', () => {
+    const listed = ['models/gemini-2.5-flash', 'models/gemini-3.5-flash', 'models/gemini-3.5-flash-lite', 'models/gemini-2.5-pro'];
+    const order = rankModels(listed, ['gemini-2.5-flash']);
+    expect(order[0]).toBe('gemini-3.5-flash');
+    expect(order).not.toContain('gemini-2.5-flash');
   });
 });

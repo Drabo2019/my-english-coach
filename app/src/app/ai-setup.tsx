@@ -4,8 +4,7 @@ import { Linking, Switch } from 'react-native';
 
 import { Btn, Card, Chip, Row, SavedInput, Screen, T } from '@/components/ui';
 import { useApp } from '@/features/app-context';
-import { testLlmConnection } from '@/services/ai';
-import { pickModel } from '@/services/ai/model-pick';
+import { ensureWorkingModel, testLlmConnection } from '@/services/ai';
 import { useTheme } from '@/hooks/use-theme';
 
 const CLOUD = [
@@ -37,13 +36,15 @@ export default function AiSetup() {
     setResult(null);
     const r = await testLlmConnection(settings);
     setResult(r);
+    setNote('');
     if (r.ok) {
-      // Providers rename and retire models: if the one set is not offered any more, switch to a listed one.
-      const pick = pickModel(r.models, settings.llmModel);
-      if (pick) {
-        await updateSettings({ llmModel: pick });
-        setNote(`The model “${settings.llmModel}” is not offered any more. Switched to “${pick}”.`);
-      } else setNote('');
+      // End-to-end: a real one-word chat. Providers rename and retire models (and may still list a retired one).
+      const w = await ensureWorkingModel(settings, r.models);
+      if (!w.ok) setResult({ ok: false, models: r.models, error: w.error ?? 'The model did not answer.' });
+      else if (w.changed) {
+        await updateSettings({ llmModel: w.model });
+        setNote(`The model “${settings.llmModel}” is not available any more. Switched to “${w.model}”, which answers.`);
+      }
     }
     setBusy(false);
   };

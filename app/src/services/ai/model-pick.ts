@@ -11,15 +11,10 @@ const version = (id: string): number => {
   return m ? parseFloat(m[1]) : 0;
 };
 
-/**
- * Returns the model to use, or null to keep the current one.
- * Keeps `current` when the service lists it; otherwise prefers the newest stable "flash" (Gemini),
- * then a small fast Llama (Groq), then any chat-looking model.
- */
-export function pickModel(listed: string[], current: string): string | null {
-  const ids = listed.map(bare);
-  if (!ids.length || ids.includes(current)) return null;
-  const chat = ids.filter((id) => !NOT_CHAT.test(id));
+/** Chat-capable models in the order they should be tried: newest stable flash first, then small fast ones, then the rest. */
+export function rankModels(listed: string[], avoid: string[] = []): string[] {
+  const skip = new Set(avoid.map(bare));
+  const chat = listed.map(bare).filter((id) => !skip.has(id) && !NOT_CHAT.test(id));
   const rank = (a: string, b: string) => {
     const pa = /preview/i.test(a) ? 1 : 0;
     const pb = /preview/i.test(b) ? 1 : 0;
@@ -27,8 +22,13 @@ export function pickModel(listed: string[], current: string): string | null {
     return version(b) - version(a); // newer first
   };
   const flash = chat.filter((id) => /flash/i.test(id) && !/lite/i.test(id)).sort(rank);
-  if (flash[0]) return flash[0];
-  const instant = chat.filter((id) => /(instant|8b|mini|small)/i.test(id)).sort(rank);
-  if (instant[0]) return instant[0];
-  return chat.sort(rank)[0] ?? ids[0];
+  const instant = chat.filter((id) => !flash.includes(id) && /(instant|8b|mini|small|lite)/i.test(id)).sort(rank);
+  const rest = chat.filter((id) => !flash.includes(id) && !instant.includes(id)).sort(rank);
+  return [...flash, ...instant, ...rest];
+}
+
+/** The model to switch to when `current` is not offered at all (null = keep it). */
+export function pickModel(listed: string[], current: string): string | null {
+  if (!listed.length || listed.map(bare).includes(bare(current))) return null;
+  return rankModels(listed)[0] ?? null;
 }

@@ -5,7 +5,7 @@ import { LEVELS } from '@/types';
 import { fetch as streamFetch } from 'expo/fetch';
 
 import { getSettings, setSettings, type Settings } from '../storage/repo';
-import { pickModel } from './model-pick';
+import { rankModels } from './model-pick';
 import { intentOf, isMeta, offlineReply } from './offline-dialogue';
 import { parseSse } from './sse';
 
@@ -266,15 +266,35 @@ export interface AIRouter extends ConversationAIProvider {
   lastError: string | null;
 }
 
-/** A 404 from the chat endpoint usually means the model was renamed or retired: pick a listed one and remember it. */
-async function repairModel(s: Settings): Promise<Settings | null> {
-  const r = await testLlmConnection(s);
-  if (!r.ok) return null;
-  const pick = pickModel(r.models, s.llmModel);
-  if (!pick) return null;
-  const next = { ...s, llmModel: pick };
-  await setSettings(next);
-  return next;
+/**
+ * Makes sure the configured model really answers. A provider can keep LISTING a model that it refuses to serve
+ * ("no longer available to new users" → 404), so the list alone is not enough: try a real one-word chat, and on a
+ * 404 walk through the best candidates until one works, then remember it.
+ */
+export async function ensureWorkingModel(
+  s: Settings,
+  listed?: string[],
+): Promise<{ ok: boolean; model: string; changed: boolean; error?: string }> {
+  const ping = (model: string) => chat({ ...s, llmModel: model }, [{ role: 'user', content: 'Reply with the single word OK.' }]);
+  let first = '';
+  try {
+    await ping(s.llmModel);
+    return { ok: true, model: s.llmModel, changed: false };
+  } catch (e) {
+    first = String(e);
+  }
+  if (!/HTTP 404/.test(first)) return { ok: false, model: s.llmModel, changed: false, error: first };
+  const models = listed ?? (await testLlmConnection(s)).models;
+  for (const cand of rankModels(models, [s.llmModel]).slice(0, 4)) {
+    try {
+      await ping(cand);
+      await setSettings({ ...s, llmModel: cand });
+      return { ok: true, model: cand, changed: true };
+    } catch {
+      /* try the next candidate */
+    }
+  }
+  return { ok: false, model: s.llmModel, changed: false, error: first };
 }
 
 export async function getAI(): Promise<AIRouter> {
@@ -291,9 +311,9 @@ export async function getAI(): Promise<AIRouter> {
         } catch (e) {
           router.lastError = String(e);
           if (/HTTP 404/.test(String(e))) {
-            const fixed = await repairModel(settings).catch(() => null);
-            if (fixed) {
-              online = openAICompatProvider(fixed);
+            const fixed = await ensureWorkingModel(settings).catch(() => null);
+            if (fixed?.ok && fixed.changed) {
+              online = openAICompatProvider({ ...settings, llmModel: fixed.model });
               try {
                 const t = await online.reply(ctx);
                 router.lastError = null;
@@ -314,10 +334,8 @@ export async function getAI(): Promise<AIRouter> {
         } catch (e) {
           router.lastError = String(e);
           if (/HTTP 404/.test(String(e))) {
-            const fixed = await repairModel(settings).catch(() => null);
-            if (fixed) {
-              online = openAICompatProvider(fixed);
-            }
+            const fixed = await ensureWorkingModel(settings).catch(() => null);
+            if (fixed?.ok && fixed.changed) online = openAICompatProvider({ ...settings, llmModel: fixed.model });
           }
           try {
             // some servers/proxies do not stream: retry once without streaming
