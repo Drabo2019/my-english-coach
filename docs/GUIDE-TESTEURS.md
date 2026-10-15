@@ -74,7 +74,7 @@ Cochez au fur et à mesure. Pour chaque point, notez : **ça marche / ça ne mar
 
 ### Parler (l'onglet le plus important)
 - [ ] **🎙 Talk to me (free talk)** : parlez 2 à 3 minutes. L'application vous comprend-elle ? Les réponses sont-elles naturelles ? Posez-lui une question (« what do you mean? », « how are you? ») : répond-elle ?
-- [ ] **Vraie conversation (optionnel)** : touchez le message « Connect a free AI » dans la conversation, puis **Option A** (Google Gemini ou Groq : compte gratuit, clé à créer et à coller). Touchez **Use …**, collez la clé, puis **Test connection** : l'application choisit toute seule un modèle qui répond. La conversation devient-elle naturelle ? Les réponses arrivent-elles assez vite ?
+- [ ] **Vraie conversation (optionnel)** : touchez le message « Connect a free AI » dans la conversation, puis **Option A** (Google Gemini ou Groq : compte gratuit, clé à créer et à coller). Touchez **Use …**, collez la clé, puis **Test connection** : l'application choisit toute seule un modèle qui répond. La conversation devient-elle naturelle ? Les réponses arrivent-elles assez vite ? Pas à pas détaillé : fiche « Connecter Gemini en 5 minutes » (`docs/guides/guide-gemini.pdf`).
 - [ ] À la fin, **❌/✅ corrections** : sont-elles justes ? Y a-t-il de **fausses corrections** ?
 - [ ] **Find the words** : l'indice progressif vous aide-t-il ? Le **temps avant vos premiers mots** s'affiche-t-il ?
 - [ ] **Shadowing** (niveau C1 ou C2) : la phrase est lue, puis le micro s'ouvre. Le micro **capte-t-il la voix de synthèse** (ce qui fausserait le score) ?
